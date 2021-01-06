@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.CheckGroupCheckitemM2M">
+
+    <insert id="addChekitems4Group">
+        insert into t_checkgroup_checkitem(checkgroup_id, checkitem_id) values
+            <foreach collection="itemIds" item="iid" separator=",">
+                (#{groupId},#{iid})
+            </foreach>
+    </insert>
+
+    <select id="findCheckitemIdsByCheckGroupId" resultType="java.lang.Integer">
+        select checkitem_id from t_checkgroup_checkitem where checkgroup_id=#{id}
+    </select>
+</mapper>

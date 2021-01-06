@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.CheckGroupDao">
+    <!--分页查询-->
+    <select id="findPage" parameterType="string" resultType="com.itheima.pojo.CheckGroup">
+        select id,code,name,helpCode,sex,remark from t_checkgroup
+        <where>
+            <if test="queryParam!=null ">
+                code like #{queryParam} or name like #{queryParam} or helpCode like #{queryParam}
+            </if>
+        </where>
+    </select>
+
+    <insert id="addCheckGroup" parameterType="com.itheima.pojo.CheckGroup" keyProperty="id" useGeneratedKeys="true">
+        insert into t_checkgroup(code,name,helpCode,sex,remark,attention)
+            values(#{code},#{name},#{helpCode},#{sex},#{remark},#{attention})
+    </insert>
+
+    <resultMap id="findCheckGroup" type="com.itheima.pojo.CheckGroup" autoMapping="true">
+        <id column="id" property="id"/>
+        <collection property="checkItemsId" ofType="java.lang.Integer" select="com.itheima.dao.CheckGroupCheckitemM2M.findCheckitemIdsByCheckGroupId" column="id"/>
+    </resultMap>
+
+
+    <select id="findById" resultMap="findCheckGroup">
+        select * from t_checkgroup where id=#{id}
+    </select>
+</mapper>

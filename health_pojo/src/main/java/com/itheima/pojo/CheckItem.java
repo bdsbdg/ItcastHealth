@@ -1,9 +1,10 @@
 package com.itheima.pojo;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import org.hibernate.validator.constraints.NotBlank;
 
-import javax.validation.constraints.NotBlank;
+//import javax.validation.constraints.NotBlank;
+//import org.hibernate.validator.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -11,7 +12,6 @@ import java.io.Serializable;
 /**
  * 检查项
  */
-//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CheckItem implements Serializable {
     @Override
     public String toString() {
@@ -29,11 +29,13 @@ public class CheckItem implements Serializable {
     }
 
     private Integer id;//主键
-    @NotNull
-    @Size(min=1, message="项目编码不能少于一位字符")
+//    @NotNull
+//    @Size(min=1, message="项目编码不能少于一位字符")
+    @NotBlank(message="项目编码不能为空字符")
     private String code;//项目编码
-    @NotNull
-    @Size(min=1, message="项目名称不能少于一位字符")
+//    @NotNull
+//    @Size(min=1, message="项目名称不能少于一位字符")
+    @NotBlank(message="项目名称不能为空字符")
     private String name;//项目名称
     private String sex;//适用性别
     private String age;//适用年龄（范围），例如：20-50

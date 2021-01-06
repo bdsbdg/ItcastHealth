@@ -36,7 +36,8 @@
         <jedis.version>2.9.0</jedis.version>
         <quartz.version>2.2.1</quartz.version>
         <lombok.version>1.18.16</lombok.version>
-        <validation.version>2.0.1.Final</validation.version>
+        <validation-api.version>2.0.1.Final</validation-api.version>
+        <hibernate-validator.version>5.3.6.Final</hibernate-validator.version>
     </properties>
 
     <dependencyManagement>
@@ -45,7 +46,13 @@
             <dependency>
                 <groupId>javax.validation</groupId>
                 <artifactId>validation-api</artifactId>
-                <version>${validation.version}</version>
+                <version>${validation-api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate-validator.version}</version>
             </dependency>
 
             <dependency>
@@ -214,6 +221,7 @@
                 <artifactId>spring-security-taglibs</artifactId>
                 <version>${spring.security.version}</version>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 

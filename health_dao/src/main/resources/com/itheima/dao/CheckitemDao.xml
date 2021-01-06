@@ -3,17 +3,60 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itheima.dao.CheckitemDao">
-    
+
+    <!--数据总-->
     <select id="findAll" resultType="com.itheima.pojo.CheckItem">
         select id,code,name,sex,age,price,type,remark,attention from t_checkitem
     </select>
 
+    <!--条数总-->
     <select id="allCount" resultType="long">
-        select count(id) from t_checkitem
+        select count(0) from t_checkitem
     </select>
 
+    <!--添加一个-->
     <insert id="addCheckitem" parameterType="com.itheima.pojo.CheckItem">
         insert into t_checkitem(id,code,name,sex,age,price,type,remark,attention)
             values(#{id},#{code},#{name},#{sex},#{age},#{price},#{type},#{remark},#{attention})
     </insert>
+
+    <!--分页查询-->
+    <select id="findPage" parameterType="string" resultType="com.itheima.pojo.CheckItem">
+        select id,code,name,sex,age,price,type,remark,attention from t_checkitem
+            <where>
+                <if test="queryParam!=null ">
+                    code like #{queryParam} or name like #{queryParam}
+                </if>
+            </where>
+    </select>
+
+    <!--删除一个-->
+    <delete id="deleteById">
+        delete from t_checkitem where id=#{id}
+    </delete>
+
+    <!--查多对多中是否有该Checkitem关联的组-->
+    <select id="findCheckitemFromM2M" resultType="long">
+        select count(0) from t_checkgroup_checkitem where checkitem_id=#{CheckitemId}
+    </select>
+
+    <select id="findById" resultType="com.itheima.pojo.CheckItem">
+        select * from t_checkitem where id=#{id}
+    </select>
+
+    <update id="setCheckitem" parameterType="com.itheima.pojo.CheckItem">
+        update t_checkitem set code=#{code},name=#{name},sex=#{sex},age=#{age}
+            ,price=#{price},type=#{type},remark=#{remark},attention=#{attention}
+            where id=#{id}
+    </update>
+
+    <!--id List在表中count-->
+    <select id="getIdInTableCount"  resultType="long">
+        select count(0) from t_checkitem where id in(
+                <foreach collection="collection" item="id" separator=",">
+                    #{id}
+                </foreach>
+                )
+    </select>
+
 </mapper>

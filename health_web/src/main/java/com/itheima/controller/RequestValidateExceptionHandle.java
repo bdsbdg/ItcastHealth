@@ -1,6 +1,7 @@
 package com.itheima.controller;
 
 import com.itheima.entity.Result;
+import com.itheima.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.transaction.TransactionSystemException;
@@ -38,6 +39,7 @@ public class RequestValidateExceptionHandle {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Result validationBodyException(MethodArgumentNotValidException exception) {
+//        log.error(exception.getCause().getLocalizedMessage());
         BindingResult result = exception.getBindingResult();
         String message = "";
         if (result.hasErrors()) {
@@ -67,10 +69,16 @@ public class RequestValidateExceptionHandle {
         return new Result(false,"参数类型转换错误");
     }
 
+    @ExceptionHandler(ServiceException.class)
+    public Result serviceHandlerException(ServiceException exception){
+        log.error(exception.getMessage());
+        return new Result(false,exception.getMessage());
+    }
+
 
         @ExceptionHandler(Exception.class)
-    public Result commonExceptionHandler(Exception e) {
-        e.printStackTrace();
+    public Result commonExceptionHandler(Exception exception) {
+        log.error(exception.getCause().getLocalizedMessage());
         return new Result(false,"未知异常");
     }
 
