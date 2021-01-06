@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!-- 指定应用名称 -->
+    <dubbo:application name="health_service"/>
+    <!--指定暴露服务的端口，如果不指定默认为20880-->
+    <dubbo:protocol name="dubbo" port="20887"/>
+    <!--指定服务注册中心地址-->
+    <dubbo:registry address="zookeeper://127.0.0.1:2181"/>
+    <!--批量扫描，发布服务-->
+    <dubbo:annotation package="com.itheima.service.impl"/>
+
+    <!--添加事务管理器-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!--配置事务通知 在dubbo2.6.0的版本里，使用jdk来创建的话是不能注册到zookeeper。
+
+        注意：此处必须加入proxy-target-class="true"，
+              需要进行事务控制，会由Spring框架产生代理对象，接口是什么?org.spr......SpringProxy 可以发布上去，
+                注册到zookeeper上的接口为springproxy 消费者也没法调用(接口对不上)，使用接口com.ihteima.service.CheckItemService
+             解决：业务实现类上@Service(dubbo, 加上属性interfaceClass=接口.class)
+              Dubbo需要将Service发布为服务，要求必须使用cglib创建代理对象。
+
+         如果dubbo的版本为2.6.2,就没有上面的问题。-->
+    <tx:advice id="transferAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!--哪些方法开启事务-->
+            <tx:method name="set*" rollback-for="java.lang.Exception"/>
+        </tx:attributes>
+    </tx:advice>
+<!--    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>-->
+    <aop:config>
+<!--        &lt;!&ndash;使用AOP增强指定的切入点&ndash;&gt;-->
+<!--        <aop:pointcut id="plan" expression="execution(* com.itheima.service.impl.UserServiceImpl.*(..))"/>-->
+<!--        &lt;!&ndash;将通知插入切入点&ndash;&gt;-->
+<!--        <aop:advisor advice-ref="transferAdvice" pointcut-ref="plan"/>-->
+    </aop:config>
+
+    <import resource="classpath:applicationContext-dao.xml"/>
+
+</beans>
