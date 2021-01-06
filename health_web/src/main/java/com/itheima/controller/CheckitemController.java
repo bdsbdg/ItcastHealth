@@ -98,5 +98,4 @@ public class CheckitemController {
         return new Result(true,MessageConstant.EDIT_CHECKITEM_SUCCESS);
     }
 
-    
 }

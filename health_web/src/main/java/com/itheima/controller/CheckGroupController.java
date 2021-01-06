@@ -40,10 +40,30 @@ public class CheckGroupController {
         return new Result(true,MessageConstant.ADD_CHECKGROUP_SUCCESS);
     }
 
+    /**
+     * 查出组及组下item的id
+     * @param id
+     * @return
+     */
     @ResponseBody
     @GetMapping("/find/{id}")
     public Result findCheckGroup(@PathVariable("id") @Min(value = 1,message = "id不能小于1") Integer id){
         return new Result(true, MessageConstant.QUERY_CHECKITEM_SUCCESS, checkGroupService.findById(id));
+    }
+
+    @ResponseBody
+    @PutMapping("/set")
+    public Result setCheckGroup(@Validated @RequestBody CheckGroup checkGroup){
+        System.out.println(checkGroup);
+        checkGroupService.setCheckGroup(checkGroup);
+        return new Result(true, MessageConstant.EDIT_CHECKGROUP_SUCCESS);
+    }
+
+    @ResponseBody
+    @DeleteMapping("/delete/{id}")
+    public Result deleteCheckGroup(@PathVariable("id") @Min(value = 1,message = "id不能小于1")Integer id){
+        checkGroupService.deleteCheckGroupById(id);
+        return new Result(true, MessageConstant.DELETE_CHECKGROUP_SUCCESS);
     }
 
 }

@@ -11,4 +11,8 @@ public interface CheckGroupService {
     void addCheckGroup(CheckGroup checkGroup) throws ServiceException;
 
     CheckGroup findById(Integer id);
+
+    void setCheckGroup(CheckGroup checkGroup);
+
+    void deleteCheckGroupById(Integer id);
 }

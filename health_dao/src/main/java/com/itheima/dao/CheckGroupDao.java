@@ -11,4 +11,8 @@ public interface CheckGroupDao {
     void addCheckGroup(CheckGroup checkGroup);
 
     CheckGroup findById(Integer id);
+
+    void setCheckGroup(CheckGroup checkGroup);
+
+    void deleteCheckGroupById(Integer id);
 }

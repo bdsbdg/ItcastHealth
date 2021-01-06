@@ -27,4 +27,12 @@
     <select id="findById" resultMap="findCheckGroup">
         select * from t_checkgroup where id=#{id}
     </select>
+
+    <update id="setCheckGroup">
+        update t_checkgroup set code=#{code},name=#{name},helpCode=#{helpCode},sex=#{sex},remark=#{remark},attention=#{attention} where id=#{id}
+    </update>
+
+    <delete id="deleteCheckGroupById">
+        delete from t_checkgroup where id=#{id}
+    </delete>
 </mapper>

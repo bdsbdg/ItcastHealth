@@ -335,16 +335,36 @@
                 // 删除
                 handleDelete(row) {
                     // console.log(row)
-                    axios.delete("/checkitem/delete/" + row.id + ".do")
-                        .then(res => {
-                            if (res.data.flag){
-                                // 删除成功 刷新页面
-                                this.findPage();
-                                this.$message.success(res.data.msg);
-                            }else {
-                                this.$message.error(res.data.msg);
-                            }
-                        })
+                    this.$confirm('此操作将永久删除该检查项, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        // 确定
+                        // 发送删除请求
+                        axios.delete("/checkitem/delete/"+ row.id +".do")
+                            .then(res => {
+                                if (res.data.flag){
+                                    this.findPage();
+                                    this.$message({
+                                        type: 'success',
+                                        message: '删除成功!'
+                                    });
+                                }else {
+                                    this.$message({
+                                        type: 'error',
+                                        message: res.data.msg
+                                    });
+                                }
+                            })
+
+                    }).catch(() => {
+                        // 取消
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
                 }
             }
         })

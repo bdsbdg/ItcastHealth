@@ -76,7 +76,7 @@ public class RequestValidateExceptionHandle {
     }
 
 
-        @ExceptionHandler(Exception.class)
+    @ExceptionHandler(Exception.class)
     public Result commonExceptionHandler(Exception exception) {
         log.error(exception.getCause().getLocalizedMessage());
         return new Result(false,"未知异常");

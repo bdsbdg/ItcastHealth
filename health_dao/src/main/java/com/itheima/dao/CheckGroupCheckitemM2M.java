@@ -9,4 +9,7 @@ public interface CheckGroupCheckitemM2M {
     void addChekitems4Group(@Param("itemIds")Set<Integer> itemIds, @Param("groupId") int gid);
 
     List<Integer> findCheckitemIdsByCheckGroupId(Integer id);
+
+    void clearBindByCheckGroup(Integer id);
+
 }

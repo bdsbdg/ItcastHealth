@@ -12,6 +12,7 @@ import com.itheima.pojo.CheckGroup;
 import com.itheima.pojo.CheckItem;
 import com.itheima.service.CheckGroupService;
 import com.itheima.service.CheckitemService;
+import org.apache.poi.hssf.record.MMSRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sound.midi.Soundbank;
@@ -60,7 +61,9 @@ public class CheckGroupServiceImpl implements CheckGroupService {
         // TODO  事务
         // 添加组
         checkGroupDao.addCheckGroup(checkGroup);
-        System.out.println("添加的组id："+checkGroup.getId());
+//        System.out.println("添加的组id："+checkGroup.getId());
+
+//        int a = 1/0;
 
         // 添加多对多关系
         checkGroupCheckitemM2M.addChekitems4Group(new HashSet<>(checkGroup.getCheckItemsId()),checkGroup.getId());
@@ -79,5 +82,24 @@ public class CheckGroupServiceImpl implements CheckGroupService {
             return checkGroup;
         }
         throw new ServiceException("未找到该检查项!");
+    }
+
+    @Override
+    public void setCheckGroup(CheckGroup checkGroup){
+        // 开启事务
+        // 改变group属性
+        checkGroupDao.setCheckGroup(checkGroup);
+        // 删除旧多对多关系
+        checkGroupCheckitemM2M.clearBindByCheckGroup(checkGroup.getId());
+        // 添加新多对多关系
+        checkGroupCheckitemM2M.addChekitems4Group(new HashSet<Integer>(checkGroup.getCheckItemsId()),checkGroup.getId());
+    }
+
+    @Override
+    public void deleteCheckGroupById(Integer id) {
+        // 解除多对多绑定关系
+        checkGroupCheckitemM2M.clearBindByCheckGroup(id);
+        // 删除组
+        checkGroupDao.deleteCheckGroupById(id);
     }
 }

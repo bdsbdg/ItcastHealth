@@ -31,16 +31,22 @@
          如果dubbo的版本为2.6.2,就没有上面的问题。-->
     <tx:advice id="transferAdvice" transaction-manager="transactionManager">
         <tx:attributes>
-            <!--哪些方法开启事务-->
+            <!--哪些方法开启事务及事务隔离级别 什么异常不回滚-->
             <tx:method name="set*" rollback-for="java.lang.Exception"/>
+            <tx:method name="delete*" rollback-for="java.lang.Exception"/>
+            <tx:method name="add*" rollback-for="java.lang.Exception"/>
         </tx:attributes>
     </tx:advice>
 <!--    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>-->
-    <aop:config>
+    <aop:config proxy-target-class="true">
 <!--        &lt;!&ndash;使用AOP增强指定的切入点&ndash;&gt;-->
-<!--        <aop:pointcut id="plan" expression="execution(* com.itheima.service.impl.UserServiceImpl.*(..))"/>-->
-<!--        &lt;!&ndash;将通知插入切入点&ndash;&gt;-->
-<!--        <aop:advisor advice-ref="transferAdvice" pointcut-ref="plan"/>-->
+        <aop:pointcut id="plan1" expression="execution(* com.itheima.service.impl.CheckGroupServiceImpl.add*(..))" />
+        <aop:pointcut id="plan2" expression="execution(* com.itheima.service.impl.CheckGroupServiceImpl.delete*(..))"/>
+        <aop:pointcut id="plan3" expression="execution(* com.itheima.service.impl.CheckGroupServiceImpl.set*(..))"/>
+        <!--将通知插入切入点-->
+        <aop:advisor advice-ref="transferAdvice" pointcut-ref="plan1" />
+        <aop:advisor advice-ref="transferAdvice" pointcut-ref="plan2"/>
+        <aop:advisor advice-ref="transferAdvice" pointcut-ref="plan3"/>
     </aop:config>
 
     <import resource="classpath:applicationContext-dao.xml"/>

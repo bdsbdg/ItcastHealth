@@ -298,6 +298,20 @@
             methods: {
                 //编辑
                 handleEdit() {
+                    this.formData["checkItemsId"] = this.checkitemIds;
+                    axios.put("/checkgroup/set.do",this.formData)
+                        .then(res => {
+                            // console.log(res.data);
+                            if (res.data.flag){
+                                this.dialogFormVisible4Edit = false;
+                                this.formData = {};
+                                this.checkitemIds = [];
+                                this.findPage();
+                                this.$message.success(res.data.msg);
+                            }else {
+                                this.$message.error(res.data.msg);
+                            }
+                        })
                 },
                 //添加
                 handleAdd () {
@@ -344,6 +358,7 @@
                 },
                 // 弹出添加窗口
                 getCheckitemList(){
+                    // 获取所有检查项
                     axios.get("/checkitem/find/all.do")
                         .then(res => {
                             if (res.data.flag){
@@ -379,8 +394,38 @@
                             }
                         })
                 },
-                // 删除
+
                 handleDelete(row) {
+                    this.$confirm('此操作将永久删除该检查组, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        // 确定
+                        // 发送删除请求
+                        axios.delete("/checkgroup/delete/"+ row.id +".do")
+                            .then(res => {
+                                if (res.data.flag){
+                                    this.findPage();
+                                    this.$message({
+                                        type: 'success',
+                                        message: '删除成功!'
+                                    });
+                                }else {
+                                    this.$message({
+                                        type: 'error',
+                                        message: res.data.msg
+                                    });
+                                }
+                            })
+
+                    }).catch(() => {
+                        // 取消
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
                 }
             }
         })
