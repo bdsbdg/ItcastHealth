@@ -40,9 +40,9 @@
 <!--    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>-->
     <aop:config proxy-target-class="true">
 <!--        &lt;!&ndash;使用AOP增强指定的切入点&ndash;&gt;-->
-        <aop:pointcut id="plan1" expression="execution(* com.itheima.service.impl.CheckGroupServiceImpl.add*(..))" />
-        <aop:pointcut id="plan2" expression="execution(* com.itheima.service.impl.CheckGroupServiceImpl.delete*(..))"/>
-        <aop:pointcut id="plan3" expression="execution(* com.itheima.service.impl.CheckGroupServiceImpl.set*(..))"/>
+        <aop:pointcut id="plan1" expression="execution(* com.itheima.service.impl.*.add*(..))" />
+        <aop:pointcut id="plan2" expression="execution(* com.itheima.service.impl.*.delete*(..))"/>
+        <aop:pointcut id="plan3" expression="execution(* com.itheima.service.impl.*.set*(..))"/>
         <!--将通知插入切入点-->
         <aop:advisor advice-ref="transferAdvice" pointcut-ref="plan1" />
         <aop:advisor advice-ref="transferAdvice" pointcut-ref="plan2"/>

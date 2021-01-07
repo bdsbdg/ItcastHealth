@@ -5,6 +5,8 @@ import com.itheima.entity.QueryPageBean;
 import com.itheima.exception.ServiceException;
 import com.itheima.pojo.CheckGroup;
 
+import java.util.List;
+
 public interface CheckGroupService {
     PageResult<CheckGroup> findPage(QueryPageBean queryPageBean);
 
@@ -15,4 +17,8 @@ public interface CheckGroupService {
     void setCheckGroup(CheckGroup checkGroup);
 
     void deleteCheckGroupById(Integer id);
+
+    List<CheckGroup> findAll();
+
+    boolean hasCheckGroupIds(List<Integer> checkGroupsId);
 }

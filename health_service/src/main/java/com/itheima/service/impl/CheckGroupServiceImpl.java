@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sound.midi.Soundbank;
 import java.util.HashSet;
+import java.util.List;
 
 @Service(interfaceClass = CheckGroupService.class)
 public class CheckGroupServiceImpl implements CheckGroupService {
@@ -66,7 +67,10 @@ public class CheckGroupServiceImpl implements CheckGroupService {
 //        int a = 1/0;
 
         // 添加多对多关系
-        checkGroupCheckitemM2M.addChekitems4Group(new HashSet<>(checkGroup.getCheckItemsId()),checkGroup.getId());
+        if (checkGroup.getCheckItemsId().size()!=0){
+            // 添加时可以不点 item
+            checkGroupCheckitemM2M.addChekitems4Group(new HashSet<>(checkGroup.getCheckItemsId()),checkGroup.getId());
+        }
     }
 
     /**
@@ -101,5 +105,25 @@ public class CheckGroupServiceImpl implements CheckGroupService {
         checkGroupCheckitemM2M.clearBindByCheckGroup(id);
         // 删除组
         checkGroupDao.deleteCheckGroupById(id);
+    }
+
+    @Override
+    public List<CheckGroup> findAll() {
+        return checkGroupDao.findAll();
+    }
+
+    @Override
+    public boolean hasCheckGroupIds(List<Integer> checkGroupsIds) {
+        if (checkGroupsIds.size()==0){
+            // 没有选择checkitem
+            return true;
+        }
+        HashSet<Integer> idSet = new HashSet<>(checkGroupsIds);
+        long count = checkGroupDao.getIdInTableCount(idSet);
+        if (count!=idSet.size()){
+            // 添加时有人删除了某个检查项
+            return false;
+        }
+        return true;
     }
 }

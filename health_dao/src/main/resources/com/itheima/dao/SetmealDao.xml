@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.SetmealDao">
+
+    <insert id="addCheckGroup" keyProperty="id" useGeneratedKeys="true">
+        insert into t_setmeal(name,code,helpCode,sex,age,price,remark,attention,img)
+            values (#{name},#{code},#{helpCode},#{sex},#{age},#{price},#{remark},#{attention},#{img})
+    </insert>
+
+    <select id="findPage" resultType="com.itheima.pojo.Setmeal">
+        select id,name,code,helpCode,sex,age,remark,attention,img from t_setmeal
+        <where>
+            <if test="queryParam!=null ">
+                code like #{queryParam} or name like #{queryParam} or helpCode like #{queryParam}
+            </if>
+        </where>
+    </select>
+
+    <resultMap id="findSetmeal" type="com.itheima.pojo.Setmeal" autoMapping="true">
+        <id column="id" property="id"/>
+        <collection property="checkGroupsId" ofType="java.lang.Integer" select="com.itheima.dao.setmealCheckGroupM2M.findCheckGroupIdsBySetmealId" column="id"/>
+    </resultMap>
+
+    <select id="findById" resultMap="findSetmeal">
+        select * from t_setmeal where id=#{id}
+    </select>
+
+    <delete id="setCheckGroup">
+        update t_setmeal set code=#{code},name=#{name},helpCode=#{helpCode},sex=#{sex},remark=#{remark},attention=#{attention} where id=#{id}
+    </delete>
+
+    <delete id="deleteSetmealById">
+        delete from t_setmeal where id=#{id}
+    </delete>
+
+    <select id="getImg" resultType="java.lang.String">
+        select img from t_setmeal where id=#{id}
+    </select>
+</mapper>

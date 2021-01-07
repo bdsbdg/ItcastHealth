@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.setmealCheckGroupM2M">
+
+    <insert id="addChekGroup4Setmeal">
+        insert into t_setmeal_checkgroup(setmeal_id, checkgroup_id) values
+        <foreach collection="groupIds" item="gid" separator=",">
+            (#{setmaelId},#{gid})
+        </foreach>
+    </insert>
+
+    <select id="findCheckGroupIdsBySetmealId" resultType="java.lang.Integer">
+        select checkgroup_id from t_setmeal_checkgroup where setmeal_id=#{id}
+    </select>
+
+    <delete id="clearBindBySetmeal">
+        delete from t_setmeal_checkgroup where setmeal_id=#{id}
+    </delete>
+
+    <insert id="addCheckGroups4Setmeal">
+        insert into t_setmeal_checkgroup(setmeal_id, checkgroup_id) values
+        <foreach collection="groupIds" item="iid" separator=",">
+            (#{setmealId},#{iid})
+        </foreach>
+    </insert>
+</mapper>

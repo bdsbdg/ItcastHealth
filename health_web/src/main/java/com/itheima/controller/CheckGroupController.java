@@ -6,12 +6,14 @@ import com.itheima.constant.MessageConstant;
 import com.itheima.entity.QueryPageBean;
 import com.itheima.entity.Result;
 import com.itheima.pojo.CheckGroup;
+import com.itheima.pojo.CheckItem;
 import com.itheima.service.CheckGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Min;
+import java.util.List;
 
 @Validated
 @RestController
@@ -20,6 +22,18 @@ public class CheckGroupController {
 
     @Reference
     private CheckGroupService checkGroupService;
+
+    /**
+     * 查询所有checkgroup
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/find/all")
+    public Result findAll(){
+        List<CheckGroup> checkGroupList = checkGroupService.findAll();
+        return new Result(true,MessageConstant.QUERY_CHECKGROUP_SUCCESS,checkGroupList);
+    }
+
 
     @ResponseBody
     @PostMapping("/find/page")

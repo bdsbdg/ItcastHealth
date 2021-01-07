@@ -8,7 +8,7 @@ import com.itheima.entity.PageResult;
 import com.itheima.entity.QueryPageBean;
 import com.itheima.exception.ServiceException;
 import com.itheima.pojo.CheckItem;
-import com.itheima.service.CheckitemService;
+import com.itheima.service .CheckitemService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashSet;
