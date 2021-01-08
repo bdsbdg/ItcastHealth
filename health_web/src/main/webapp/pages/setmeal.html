@@ -427,7 +427,10 @@
                 // 弹出添加窗口
                 handleCreate() {
                     // 查询 checkgroup
+                    this.formData = {};
+                    this.checkgroupIds=[]
                     this.dialogFormVisible = true;
+                    this.imageUrl = null;
                     this.findCheckGroups();
                 },
                 //切换页码

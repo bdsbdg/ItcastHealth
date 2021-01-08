@@ -15,6 +15,7 @@
         <module>health_interface</module>
         <module>health_service</module>
         <module>health_web</module>
+        <module>health_timedtask</module>
     </modules>
 
     <properties>
@@ -39,10 +40,45 @@
         <validation-api.version>2.0.1.Final</validation-api.version>
         <hibernate-validator.version>5.3.6.Final</hibernate-validator.version>
         <qiniu.version>7.2.0</qiniu.version>
+        <jedis.version>2.9.0</jedis.version>
+        <quartz.version>2.2.1</quartz.version>
+        <quartz-jobs.version>2.2.1</quartz-jobs.version>
+        <spring-context-support.version>5.0.2.RELEASE</spring-context-support.version>
+        <spring-tx.version>5.0.2.RELEASE</spring-tx.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!--spring整合Quartz-->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context-support</artifactId>
+                <version>${spring-context-support.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-tx</artifactId>
+                <version>${spring-tx.version}</version>
+            </dependency>
+
+            <!--quartz的基础包-->
+            <dependency>
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz</artifactId>
+                <version>${quartz.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz-jobs</artifactId>
+                <version>${quartz-jobs.version}</version>
+            </dependency>
+
+            <!--Jedis -->
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>${jedis.version}</version>
+            </dependency>
 
             <!--七牛云-->
             <dependency>

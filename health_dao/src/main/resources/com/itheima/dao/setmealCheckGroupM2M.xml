@@ -25,4 +25,8 @@
             (#{setmealId},#{iid})
         </foreach>
     </insert>
+
+    <select id="findCheckGroupFromM2M" resultType="long">
+        select count(0) from t_setmeal_checkgroup where checkgroup_id=#{id}
+    </select>
 </mapper>

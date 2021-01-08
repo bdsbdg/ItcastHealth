@@ -13,4 +13,6 @@ public interface setmealCheckGroupM2M {
     void clearBindBySetmeal(Integer id);
 
     void addCheckGroups4Setmeal(@Param("groupIds") HashSet<Integer> integers, @Param("setmealId") Integer id);
+
+    long findCheckGroupFromM2M(Integer id);
 }

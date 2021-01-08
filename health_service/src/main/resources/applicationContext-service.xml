@@ -50,5 +50,5 @@
     </aop:config>
 
     <import resource="classpath:applicationContext-dao.xml"/>
-
+    <import resource="application-job.xml"/>
 </beans>

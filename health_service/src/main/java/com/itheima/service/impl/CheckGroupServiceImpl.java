@@ -5,6 +5,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.itheima.dao.CheckGroupCheckitemM2M;
 import com.itheima.dao.CheckGroupDao;
+import com.itheima.dao.setmealCheckGroupM2M;
 import com.itheima.entity.PageResult;
 import com.itheima.entity.QueryPageBean;
 import com.itheima.exception.ServiceException;
@@ -28,6 +29,8 @@ public class CheckGroupServiceImpl implements CheckGroupService {
     private CheckGroupCheckitemM2M checkGroupCheckitemM2M;
     @Autowired
     private CheckitemService checkitemService;
+    @Autowired
+    private setmealCheckGroupM2M setmealCheckGroupM2M;
 
     @Override
     public PageResult<CheckGroup> findPage(QueryPageBean queryPageBean) {
@@ -101,6 +104,11 @@ public class CheckGroupServiceImpl implements CheckGroupService {
 
     @Override
     public void deleteCheckGroupById(Integer id) {
+        // 查看是否有关联套餐
+        if (setmealCheckGroupM2M.findCheckGroupFromM2M(id)>0) {
+            // 抛出异常
+            throw new ServiceException("该检查项已关联套餐 不能删除!");
+        }
         // 解除多对多绑定关系
         checkGroupCheckitemM2M.clearBindByCheckGroup(id);
         // 删除组

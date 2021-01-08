@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+<!--    &lt;!&ndash; 指定应用名称 &ndash;&gt;-->
+<!--    <dubbo:application name="health_job" />-->
+<!--    &lt;!&ndash;指定服务注册中心地址&ndash;&gt;-->
+<!--    <dubbo:registry address="zookeeper://127.0.0.1:2181"/>-->
+<!--    &lt;!&ndash; 任务类要注册 使用dubbo 扫包  &ndash;&gt;-->
+<!--    <dubbo:annotation package="com.itheima.job.timetask"/>-->
+    <context:component-scan base-package="com.itheima.job.timetask"/>
+    <!--  策略  -->
+    <bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="CleanImgTask"/>
+        <property name="targetMethod" value="cleanImg"/>
+        <!--concurrent为true时，多线程来跑任务 异步
+            false: 则为单线程来跑任务 同步
+        -->
+        <property name="concurrent" value="false"/>
+    </bean>
+    <!--  触发器  -->
+    <bean id="trigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="cronExpression" value="0 0 4 * * ?"/>
+        <property name="jobDetail" ref="jobDetail"/>
+    </bean>
+    <!--  调度容器  -->
+    <!--  调度容器  -->
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="trigger"/>
+            </list>
+        </property>
+    </bean>
+</beans>

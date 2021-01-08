@@ -9,9 +9,12 @@ import com.itheima.pojo.CheckGroup;
 import com.itheima.pojo.Setmeal;
 import com.itheima.service.SetmealService;
 import com.itheima.utils.QiNiuUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import redis.clients.jedis.ShardedJedis;
+import redis.clients.jedis.ShardedJedisPool;
 
 import javax.validation.constraints.Min;
 import java.io.IOException;
@@ -26,6 +29,9 @@ public class SetmealController {
 
     @Reference
     private SetmealService setmealService;
+
+    @Autowired
+    private ShardedJedisPool shardedJedisPool;
 
     /**
      * 上传图片
@@ -49,6 +55,16 @@ public class SetmealController {
 
             Map<String,String> map = new HashMap<String,String>();
             String imgId = QiNiuUtils.uploadViaByte(imgFile.getBytes(), filename);
+//             imgKey缓存至redis  前端提交时删除redis的imgKey
+            ShardedJedis jedisConn = shardedJedisPool.getResource();
+            try {
+                jedisConn.hset(MessageConstant.SETMEAL_IMG_KEY,imgId, String.valueOf(System.currentTimeMillis()));
+            }catch (Exception e){
+                throw e;
+            }finally {
+                jedisConn.close();
+            }
+
             map.put("path", QiNiuUtils.DOMAIN);
             map.put("imgId", imgId);
             return new Result(true, MessageConstant.PIC_UPLOAD_SUCCESS, map);
@@ -65,7 +81,7 @@ public class SetmealController {
      */
     @ResponseBody
     @PostMapping("/add")
-    public Result addCheckGroup(@Validated @RequestBody Setmeal setmeal){
+    public Result addSetmeal(@Validated @RequestBody Setmeal setmeal){
 //        System.out.println(setmeal);
         setmealService.addSetmeal(setmeal);
         return new Result(true,MessageConstant.ADD_SETMEAL_SUCCESS);

@@ -4,6 +4,7 @@ package com.itheima.service.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.itheima.constant.MessageConstant;
 import com.itheima.dao.SetmealDao;
 import com.itheima.dao.setmealCheckGroupM2M;
 import com.itheima.entity.PageResult;
@@ -15,6 +16,8 @@ import com.itheima.service.CheckGroupService;
 import com.itheima.service.SetmealService;
 import com.itheima.utils.QiNiuUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import redis.clients.jedis.ShardedJedis;
+import redis.clients.jedis.ShardedJedisPool;
 
 import java.util.HashSet;
 
@@ -27,6 +30,8 @@ public class SetmealServiceImpl implements SetmealService {
     private CheckGroupService checkGroupService;
     @Autowired
     private setmealCheckGroupM2M setmealCheckGroupM2M;
+    @Autowired
+    private ShardedJedisPool shardedJedisPool;
 
     @Override
     public void addSetmeal(Setmeal setmeal) {
@@ -41,6 +46,16 @@ public class SetmealServiceImpl implements SetmealService {
         if (setmeal.getCheckGroupsId().size()!=0){
             // 添加时可以不点 group
             setmealCheckGroupM2M.addChekGroup4Setmeal(new HashSet<>(setmeal.getCheckGroupsId()),setmeal.getId());
+        }
+
+//         删除redis上的imgKey
+        ShardedJedis jedisConn = shardedJedisPool.getResource();
+        try {
+            jedisConn.hdel(MessageConstant.SETMEAL_IMG_KEY, setmeal.getImg());
+        }catch (Exception e){
+            throw e;
+        }finally {
+            jedisConn.close();
         }
 
     }
