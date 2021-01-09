@@ -29,4 +29,20 @@
             </foreach>
         )
     </update>
+
+    <select id="findOrderByMonth" resultType="java.util.Map">
+        select cast(Date_format(orderDate,"%d") as signed ) date,number,reservations from t_ordersetting where orderDate like #{date,jdbcType=DATE}
+    </select>
+
+    <update id="setOrderById">
+        update t_ordersetting set number=#{number} where id=#{id}
+    </update>
+
+    <select id="findByOrderSetting" resultType="com.itheima.pojo.OrderSetting">
+        select * from t_ordersetting where orderDate=#{orderDate,jdbcType=DATE}
+    </select>
+
+    <insert id="addOrderSetting">
+        insert into t_ordersetting(orderDate, number) values(#{orderDate,jdbcType=DATE},#{number})
+    </insert>
 </mapper>

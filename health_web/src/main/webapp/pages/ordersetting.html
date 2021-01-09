@@ -88,7 +88,7 @@
 											<template>
                                                 <template v-for="obj in leftobj">
                                                     <template v-if="obj.date == dayobject.day.getDate()">
-                                                        <template v-if="obj.number > obj.reservations">
+                                                        <template v-if="obj.number > (obj.reservations=(obj.reservations==undefined? 0:obj.reservations))">
                                                             <div class="usual">
                                                                 <p>可预约{{obj.number}}人</p>
                                                                 <p>已预约{{obj.reservations}}人</p>
@@ -140,6 +140,23 @@
             methods: {
 				//预约设置
                 handleOrderSet(day){
+                    // console.log(day+"")
+                        this.$prompt('请输入预约人数', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            inputPattern: /^[1-9]\d*$/,
+                            inputErrorMessage: '预约人数必须为正整数'
+                        }).then(({ value }) => {
+                            axios.post("/ordersetting/set.do",{orderDate:this.formatDate(day.getFullYear(),day.getMonth()+1,day.getDate()),number:value})
+                                .then(res => {
+                                    if (res.data.flag){
+                                        this.getOrderSettings();
+                                        this.$message.success(res.data.msg);
+                                    }else {
+                                        this.$message.error(res.data.msg);
+                                    }
+                                })
+                        })
                 },
 				//上传之前进行文件格式校验
                 beforeUpload(file){
@@ -168,7 +185,7 @@
                     }else{
                         this.$message.error(response.msg);
                     }
-                    console.log(response, file, fileList);
+                    // console.log(response, file, fileList);
                 },
                 //初始化当前页要展示的日期
 				initData: function (cur) {
@@ -178,7 +195,7 @@
                         date = new Date(cur);
                     } else {
                         var now = new Date();
-                        var d = new Date(this.formatDate(now.getFullYear(), now.getMonth(), 1));
+                        var d = new Date(this.formatDate(now.getFullYear(), now.getMonth()+1, 1));
                         d.setDate(35);
                         date = new Date(this.formatDate(d.getFullYear(), d.getMonth(), 1));
                     }
@@ -236,6 +253,28 @@
                         { date: 6, number: 120, reservations: 1 },
                         { date: 8, number: 120, reservations: 1 }
                     ];*/
+                    this.getOrderSettings();
+                },
+                // 获取预约数据
+                getOrderSettings(){
+                    // console.log(this.currentMonth)
+                    // console.log(this.currentYear)
+
+                    if (this.currentMonth<10){
+                        var date = this.currentYear+"-0"+this.currentMonth
+                    }else {
+                        var date = this.currentYear+"-"+this.currentMonth
+                    }
+                    // console.log(date)
+                    axios.get("/ordersetting/date.do",{params:{date:date}})
+                        .then(res => {
+                            if (res.data.flag){
+                                this.leftobj = res.data.data;
+                                console.log(this.leftobj)
+                            }else {
+                                this.$message.error(res.data.msg);
+                            }
+                        })
                 },
 				//切换到当前月份
                 goCurrentMonth: function (year, month) {

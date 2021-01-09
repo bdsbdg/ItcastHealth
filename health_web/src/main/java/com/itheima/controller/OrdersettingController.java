@@ -8,18 +8,14 @@ import com.itheima.pojo.OrderSetting;
 import com.itheima.service.OrderService;
 import com.itheima.utils.POIUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.sound.midi.Soundbank;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @Validated
@@ -61,5 +57,24 @@ public class OrdersettingController {
         }
         // 获取数据
         return new Result(true, MessageConstant.IMPORT_ORDERSETTING_SUCCESS);
+    }
+
+    /**
+     * yyyy/MM数据查询对应月份的Order数据
+     * @return
+     */
+    @GetMapping("/date")
+    public Result findOrderByDate(String date){
+//        System.out.println(date);
+        return new Result(true, MessageConstant.GET_ORDERSETTING_SUCCESS, orderService.findOrderByMonth(date+"%"));
+    }
+
+
+    @ResponseBody
+    @PostMapping("/set")
+    public Result setOrder(@RequestBody OrderSetting orderSetting){
+//        System.out.println(orderSetting);
+        orderService.setOrderByDate(orderSetting);
+        return new Result(true, "修改预约人数成功!");
     }
 }

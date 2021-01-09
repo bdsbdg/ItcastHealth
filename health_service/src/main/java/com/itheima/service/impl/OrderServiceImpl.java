@@ -9,7 +9,9 @@ import com.itheima.service.SetmealService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service(interfaceClass = OrderService.class)
 public class OrderServiceImpl implements OrderService {
@@ -17,6 +19,10 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderDao orderDao;
 
+    /**
+     * 批量导入
+     * @param settingList
+     */
     @Override
     public void addSettings(List<OrderSetting> settingList) {
         // 多个设置
@@ -41,11 +47,8 @@ public class OrderServiceImpl implements OrderService {
                             setting.setId(inDbSetting.getId());
                             updateList.add(setting);
                         }
-
                     }
                 }
-
-
             });
 
         if (addList.size()>0){
@@ -56,4 +59,33 @@ public class OrderServiceImpl implements OrderService {
         }
 
     }
+
+    /**
+     * 查询一个月的
+     * @param date
+     * @return
+     */
+    @Override
+    public List<Map> findOrderByMonth(String date) {
+        return orderDao.findOrderByMonth(date);
+    }
+
+    /**
+     * 设置单个
+     * @param orderSetting
+     */
+    @Override
+    public void setOrderByDate(OrderSetting orderSetting) {
+        OrderSetting inDbOrdersetting = orderDao.findByOrderSetting(orderSetting);
+        if (inDbOrdersetting==null){
+            orderDao.addOrderSetting(orderSetting);
+        }else {
+            if (inDbOrdersetting.getReservations()>orderSetting.getNumber()){
+                throw new ServiceException("修改失败,最大预约人数『小于』已预约人数!");
+            }
+            orderSetting.setId(inDbOrdersetting.getId());
+            orderDao.setOrderById(orderSetting);
+        }
+    }
+
 }
