@@ -28,7 +28,7 @@
     </select>
 
     <delete id="setCheckGroup">
-        update t_setmeal set code=#{code},name=#{name},helpCode=#{helpCode},sex=#{sex},remark=#{remark},attention=#{attention} where id=#{id}
+        update t_setmeal set code=#{code},name=#{name},helpCode=#{helpCode},sex=#{sex},remark=#{remark},attention=#{attention},img=#{img} where id=#{id}
     </delete>
 
     <delete id="deleteSetmealById">

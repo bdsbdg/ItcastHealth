@@ -107,7 +107,8 @@ public class SetmealController {
     @ResponseBody
     @PutMapping("/set")
     public Result setCheckGroup(@Validated @RequestBody Setmeal setmeal){
-        System.out.println(setmeal);
+//        System.out.println(setmeal);
+
         setmealService.setSetmeal(setmeal);
         return new Result(true, "编辑套餐成功");
     }

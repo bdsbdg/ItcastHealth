@@ -48,15 +48,7 @@ public class SetmealServiceImpl implements SetmealService {
             setmealCheckGroupM2M.addChekGroup4Setmeal(new HashSet<>(setmeal.getCheckGroupsId()),setmeal.getId());
         }
 
-//         删除redis上的imgKey
-        ShardedJedis jedisConn = shardedJedisPool.getResource();
-        try {
-            jedisConn.hdel(MessageConstant.SETMEAL_IMG_KEY, setmeal.getImg());
-        }catch (Exception e){
-            throw e;
-        }finally {
-            jedisConn.close();
-        }
+        delImgKey(setmeal.getImg());
 
     }
 
@@ -85,6 +77,7 @@ public class SetmealServiceImpl implements SetmealService {
         Setmeal setmeal = setmealDao.findById(id);
         if (setmeal!=null){
 //            System.out.println(checkGroup);
+            setmeal.setImg(QiNiuUtils.DOMAIN + setmeal.getImg());
             return setmeal;
         }
         throw new ServiceException("未找到该套餐!");
@@ -99,6 +92,8 @@ public class SetmealServiceImpl implements SetmealService {
         setmealCheckGroupM2M.clearBindBySetmeal(setmeal.getId());
         // 添加新多对多关系
         setmealCheckGroupM2M.addCheckGroups4Setmeal(new HashSet<Integer>(setmeal.getCheckGroupsId()),setmeal.getId());
+        // 删除图片key
+        delImgKey(setmeal.getImg());
     }
 
     @Override
@@ -109,6 +104,17 @@ public class SetmealServiceImpl implements SetmealService {
         QiNiuUtils.removeFiles(setmealDao.getImg(id));
         // 删除套餐
         setmealDao.deleteSetmealById(id);
+    }
+
+    public void delImgKey(String imgKey){
+        //         删除redis上的imgKey
+        ShardedJedis jedisConn = shardedJedisPool.getResource();
+        try {
+            jedisConn.hdel(MessageConstant.SETMEAL_IMG_KEY, imgKey);
+        }catch (Exception e){
+        }finally {
+            jedisConn.close();
+        }
     }
 
 }

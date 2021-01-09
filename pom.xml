@@ -45,10 +45,22 @@
         <quartz-jobs.version>2.2.1</quartz-jobs.version>
         <spring-context-support.version>5.0.2.RELEASE</spring-context-support.version>
         <spring-tx.version>5.0.2.RELEASE</spring-tx.version>
+        <poi.version>3.14</poi.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+
             <!--spring整合Quartz-->
             <dependency>
                 <groupId>org.springframework</groupId>

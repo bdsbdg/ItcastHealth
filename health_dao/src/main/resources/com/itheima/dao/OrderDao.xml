@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.OrderDao">
+
+    <select id="findByDate" resultType="com.itheima.pojo.OrderSetting">
+        select * from t_ordersetting where orderDate=#{orderDate,jdbcType=DATE}
+    </select>
+
+    <insert id="addOrderSettings">
+        insert into t_ordersetting(orderdate, number) values
+            <foreach collection="collection" item="setting" separator=",">
+                (#{setting.orderDate,jdbcType=DATE},#{setting.number})
+            </foreach>
+    </insert>
+
+    <update id="updateOrderSettings">
+        UPDATE t_ordersetting
+        SET number = CASE id
+            <foreach collection="collection" item="setting" separator="
+">
+                WHEN #{setting.id} THEN #{setting.number}
+            </foreach>
+                END
+        WHERE id IN (
+            <foreach collection="collection" item="setting" separator=",">
+                #{setting.id}
+            </foreach>
+        )
+    </update>
+</mapper>

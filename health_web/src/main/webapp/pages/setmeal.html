@@ -239,9 +239,9 @@
                         </el-dialog>
                     </div>
 
-                    <!-- 编辑标签弹层 -->
+                    <!-- 新增标签弹层 -->
                     <div class="add-form">
-                        <el-dialog title="编辑检查组" :visible.sync="dialogFormVisible4Edit">
+                        <el-dialog title="编辑套餐" :visible.sync="dialogFormVisible4Edit">
                             <template>
                                 <el-tabs v-model="activeName" type="card">
                                     <el-tab-pane label="基本信息" name="first">
@@ -275,6 +275,35 @@
                                                 </el-col>
                                             </el-row>
                                             <el-row>
+                                                <el-col :span="12">
+                                                    <el-form-item label="套餐价格">
+                                                        <el-input v-model="formData.price"/>
+                                                    </el-form-item>
+                                                </el-col>
+                                                <el-col :span="12">
+                                                    <el-form-item label="适用年龄">
+                                                        <el-input v-model="formData.age"/>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="24">
+                                                    <el-form-item label="上传图片">
+                                                        <el-upload
+                                                                class="avatar-uploader"
+                                                                action="/setmeal/upload.do"
+                                                                :auto-upload="autoUpload"
+                                                                name="imgFile"
+                                                                :show-file-list="false"
+                                                                :on-success="handleAvatarSuccess"
+                                                                :before-upload="beforeAvatarUpload">
+                                                            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                                        </el-upload>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
                                                 <el-col :span="24">
                                                     <el-form-item label="说明">
                                                         <el-input v-model="formData.remark" type="textarea"></el-input>
@@ -290,7 +319,7 @@
                                             </el-row>
                                         </el-form>
                                     </el-tab-pane>
-                                    <el-tab-pane label="检查项信息" name="second">
+                                    <el-tab-pane label="检查组信息" name="second">
                                         <div class="checkScrol">
                                             <table class="datatable">
                                                 <thead>
@@ -322,6 +351,89 @@
                             </div>
                         </el-dialog>
                     </div>
+<!--                    &lt;!&ndash; 编辑标签弹层 &ndash;&gt;-->
+<!--                    <div class="add-form">-->
+<!--                        <el-dialog title="编辑检查组" :visible.sync="dialogFormVisible4Edit">-->
+<!--                            <template>-->
+<!--                                <el-tabs v-model="activeName" type="card">-->
+<!--                                    <el-tab-pane label="基本信息" name="first">-->
+<!--                                        <el-form label-position="right" label-width="100px">-->
+<!--                                            <el-row>-->
+<!--                                                <el-col :span="12">-->
+<!--                                                    <el-form-item label="编码">-->
+<!--                                                        <el-input v-model="formData.code"/>-->
+<!--                                                    </el-form-item>-->
+<!--                                                </el-col>-->
+<!--                                                <el-col :span="12">-->
+<!--                                                    <el-form-item label="名称">-->
+<!--                                                        <el-input v-model="formData.name"/>-->
+<!--                                                    </el-form-item>-->
+<!--                                                </el-col>-->
+<!--                                            </el-row>-->
+<!--                                            <el-row>-->
+<!--                                                <el-col :span="12">-->
+<!--                                                    <el-form-item label="适用性别">-->
+<!--                                                        <el-select v-model="formData.sex">-->
+<!--                                                            <el-option label="不限" value="0"></el-option>-->
+<!--                                                            <el-option label="男" value="1"></el-option>-->
+<!--                                                            <el-option label="女" value="2"></el-option>-->
+<!--                                                        </el-select>-->
+<!--                                                    </el-form-item>-->
+<!--                                                </el-col>-->
+<!--                                                <el-col :span="12">-->
+<!--                                                    <el-form-item label="助记码">-->
+<!--                                                        <el-input v-model="formData.helpCode"/>-->
+<!--                                                    </el-form-item>-->
+<!--                                                </el-col>-->
+<!--                                            </el-row>-->
+<!--                                            <el-row>-->
+<!--                                                <el-col :span="24">-->
+<!--                                                    <el-form-item label="说明">-->
+<!--                                                        <el-input v-model="formData.remark" type="textarea"></el-input>-->
+<!--                                                    </el-form-item>-->
+<!--                                                </el-col>-->
+<!--                                            </el-row>-->
+<!--                                            <el-row>-->
+<!--                                                <el-col :span="24">-->
+<!--                                                    <el-form-item label="注意事项">-->
+<!--                                                        <el-input v-model="formData.attention" type="textarea"></el-input>-->
+<!--                                                    </el-form-item>-->
+<!--                                                </el-col>-->
+<!--                                            </el-row>-->
+<!--                                        </el-form>-->
+<!--                                    </el-tab-pane>-->
+<!--                                    <el-tab-pane label="检查项信息" name="second">-->
+<!--                                        <div class="checkScrol">-->
+<!--                                            <table class="datatable">-->
+<!--                                                <thead>-->
+<!--                                                <tr>-->
+<!--                                                    <th>选择</th>-->
+<!--                                                    <th>项目编码</th>-->
+<!--                                                    <th>项目名称</th>-->
+<!--                                                    <th>项目说明</th>-->
+<!--                                                </tr>-->
+<!--                                                </thead>-->
+<!--                                                <tbody>-->
+<!--                                                <tr v-for="c in tableData">-->
+<!--                                                    <td>-->
+<!--                                                        <input :id="c.id" v-model="checkgroupIds" type="checkbox" :value="c.id">-->
+<!--                                                    </td>-->
+<!--                                                    <td><label :for="c.id">{{c.code}}</label></td>-->
+<!--                                                    <td><label :for="c.id">{{c.name}}</label></td>-->
+<!--                                                    <td><label :for="c.id">{{c.remark}}</label></td>-->
+<!--                                                </tr>-->
+<!--                                                </tbody>-->
+<!--                                            </table>-->
+<!--                                        </div>-->
+<!--                                    </el-tab-pane>-->
+<!--                                </el-tabs>-->
+<!--                            </template>-->
+<!--                            <div slot="footer" class="dialog-footer">-->
+<!--                                <el-button @click="dialogFormVisible4Edit = false">取消</el-button>-->
+<!--                                <el-button type="primary" @click="handleEdit()">确定</el-button>-->
+<!--                            </div>-->
+<!--                        </el-dialog>-->
+<!--                    </div>-->
                 </div>
             </div>
         </div>
@@ -450,6 +562,8 @@
                                 this.formData = res.data.data;
                                 this.getCheckGroupList();
                                 this.checkgroupIds = res.data.data.checkGroupsId;
+                                this.imageUrl = res.data.data.img;
+                                console.log(this.imageUrl)
                             }else {
                                 // 已经被干掉了  刷新  弹框
                                 this.findPage();
