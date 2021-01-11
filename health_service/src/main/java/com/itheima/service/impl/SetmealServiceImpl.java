@@ -20,6 +20,7 @@ import redis.clients.jedis.ShardedJedis;
 import redis.clients.jedis.ShardedJedisPool;
 
 import java.util.HashSet;
+import java.util.List;
 
 @Service(interfaceClass = SetmealService.class)
 public class SetmealServiceImpl implements SetmealService {
@@ -104,6 +105,21 @@ public class SetmealServiceImpl implements SetmealService {
         QiNiuUtils.removeFiles(setmealDao.getImg(id));
         // 删除套餐
         setmealDao.deleteSetmealById(id);
+    }
+
+    @Override
+    public List<Setmeal> findAll() {
+        return setmealDao.findAll();
+    }
+
+    /**
+     * 套餐详详详情
+     * @param id
+     * @return
+     */
+    @Override
+    public Setmeal findDetailById(Integer id) {
+        return setmealDao.findDetailById(id);
     }
 
     public void delImgKey(String imgKey){

@@ -38,4 +38,52 @@
     <select id="getImg" resultType="java.lang.String">
         select img from t_setmeal where id=#{id}
     </select>
+
+    <select id="findAll" resultMap="findSetmeal">
+        select * from t_setmeal
+    </select>
+
+    <resultMap id="setmealDetail" type="com.itheima.pojo.Setmeal">
+        <id column="sid" property="id"/>
+        <result column="sname" property="name"/>
+        <result column="scode" property="code"/>
+        <result column="shelpcode" property="helpCode"/>
+        <result column="ssex" property="sex"/>
+        <result column="sage" property="age"/>
+        <result column="sprice" property="price"/>
+        <result column="sremark" property="remark"/>
+        <result column="sattention" property="attention"/>
+        <result column="simg" property="img"/>
+        <collection property="checkGroups" ofType="com.itheima.pojo.CheckGroup">
+            <id property="id" column="gid" />
+            <result property="code" column="gcode"/>
+            <result property="name" column="gname"/>
+            <result property="helpCode" column="ghelpcode"/>
+            <result property="sex" column="gsex"/>
+            <result property="remark" column="gremark"/>
+            <result property="attention" column="gattention"/>
+            <collection property="checkItems" ofType="com.itheima.pojo.CheckItem">
+                <id property="id" column="iid" />
+                <result property="code" column="icode"/>
+                <result property="name" column="iname"/>
+                <result property="sex" column="isex"/>
+                <result property="age" column="iage"/>
+                <result property="price" column="iprice"/>
+                <result property="type" column="itype"/>
+                <result property="remark" column="iremark"/>
+                <result property="attention" column="iattention"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="findDetailById" resultMap="setmealDetail">
+        SELECT s.id sid,s.name sname,s.code scode,s.helpCode shelpcode,s.sex ssex,s.age sage,s.price sprice,s.remark sremark,s.attention sattention,s.img simg
+                       ,g.id gid,g.code gcode,g.name gname,g.helpCode ghelpcode,g.sex gsex,g.remark gremark,g.attention gattention
+                       ,i.id iid,i.code icode,i.name iname,i.sex isex,i.age iage,i.price iprice,i.type itype,i.remark iremark,i.attention iattention
+        from t_setmeal s left JOIN t_setmeal_checkgroup sc on s.id=sc.setmeal_id
+                                  left JOIn t_checkgroup g on sc.checkgroup_id=g.id
+                                  left JOIN t_checkgroup_checkitem cc on g.id=cc.checkgroup_id
+                                  LEFT JOIN t_checkitem i on cc.checkitem_id=i.id
+        WHERE s.id=#{id}
+    </select>
 </mapper>

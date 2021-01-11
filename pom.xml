@@ -16,6 +16,7 @@
         <module>health_service</module>
         <module>health_web</module>
         <module>health_timedtask</module>
+        <module>health_mobile</module>
     </modules>
 
     <properties>
@@ -50,6 +51,18 @@
 
     <dependencyManagement>
         <dependencies>
+            <!--阿里云服务器短信平台-->
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>aliyun-java-sdk-core</artifactId>
+                <version>3.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi</artifactId>
