@@ -65,4 +65,6 @@ public interface MessageConstant {
     static final String GET_SETMEAL_LIST_SUCCESS = "查询套餐列表数据成功";
     static final String GET_SETMEAL_LIST_FAIL = "查询套餐列表数据失败";
     static final String SETMEAL_IMG_KEY = "setmeal:imgKey";
+    static final String SET_VERIFY_CODE_HEDER = "verifycode:";
+    static final String SET_VERIFY_CODE_LOGIN_HEDER = "login:verifycode:";
 }

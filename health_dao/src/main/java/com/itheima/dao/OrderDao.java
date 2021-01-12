@@ -2,6 +2,7 @@ package com.itheima.dao;
 
 import com.itheima.pojo.OrderSetting;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -19,4 +20,6 @@ public interface OrderDao {
     OrderSetting findByOrderSetting(OrderSetting orderSetting);
 
     void addOrderSetting(OrderSetting orderSetting);
+
+    int addReservationsByOrderDate(Date orderDate);
 }

@@ -45,4 +45,9 @@
     <insert id="addOrderSetting">
         insert into t_ordersetting(orderDate, number) values(#{orderDate,jdbcType=DATE},#{number})
     </insert>
+
+    <update id="addReservationsByOrderDate">
+        update t_ordersetting set reservations=reservations+1
+            where orderDate=#{orderDate,jdbcType=DATE} and reservations&lt;number
+    </update>
 </mapper>
