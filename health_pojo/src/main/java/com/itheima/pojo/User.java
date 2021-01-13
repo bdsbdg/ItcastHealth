@@ -9,6 +9,21 @@ import java.util.Set;
  * 用户
  */
 public class User implements Serializable{
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", birthday=" + birthday +
+                ", gender='" + gender + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", remark='" + remark + '\'' +
+                ", station='" + station + '\'' +
+                ", telephone='" + telephone + '\'' +
+                ", roles=" + roles +
+                '}';
+    }
+
     private Integer id; // 主键
     private Date birthday; // 生日
     private String gender; // 性别

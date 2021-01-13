@@ -53,6 +53,7 @@ public class OrderController {
             log.error(e.getMessage());
         }finally {
             jedisConn.close();
+            System.out.println();
         }
         Order order = orderRecordService.addOrder(orderInfo);
         return new Result(true,MessageConstant.ORDER_SUCCESS,order);

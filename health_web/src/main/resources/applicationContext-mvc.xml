@@ -44,6 +44,7 @@
 		<context:component-scan/>
     -->
     <dubbo:annotation package="com.itheima.controller" />
+    <dubbo:annotation package="com.itheima.permission" />
     <!--
         超时全局设置 10分钟
         check=false 不检查服务提供方，开发阶段建议设置为false
@@ -79,4 +80,6 @@
             </list>
         </constructor-arg>
     </bean>
+    <bean class="com.itheima.controller.RequestValidateExceptionHandle"/>
+    <import resource="spring-permission.xml"/>
 </beans>

@@ -8,6 +8,17 @@ import java.util.Set;
  * 权限
  */
 public class Permission implements Serializable{
+    @Override
+    public String toString() {
+        return "Permission{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", keyword='" + keyword + '\'' +
+                ", description='" + description + '\'' +
+                ", roles=" + roles +
+                '}';
+    }
+
     private Integer id;
     private String name; // 权限名称
     private String keyword; // 权限关键字，用于权限控制

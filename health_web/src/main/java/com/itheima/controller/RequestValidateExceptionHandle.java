@@ -4,6 +4,8 @@ import com.itheima.entity.Result;
 import com.itheima.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageConversionException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -75,9 +77,28 @@ public class RequestValidateExceptionHandle {
         return new Result(false,exception.getMessage());
     }
 
+    @ExceptionHandler(InternalAuthenticationServiceException.class)
+    public Result handInternalAuthenticationServiceException(InternalAuthenticationServiceException he){
+        return handleUserPassword();
+    }
+    /**
+     * 用户名不存在
+     * @return
+     */
+    private Result handleUserPassword(){
+        return new Result(false, "用户名或密码错误");
+    }
+
+
+    @ExceptionHandler(AccessDeniedException.class)
+        public Result handAccessDeniedException(AccessDeniedException he){
+        return new Result(false, "没有权限");
+    }
+
 
     @ExceptionHandler(Exception.class)
     public Result commonExceptionHandler(Exception exception) {
+        exception.printStackTrace();
         log.error(exception.getCause().getLocalizedMessage());
         return new Result(false,"未知异常");
     }

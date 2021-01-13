@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.HashSet;
 import java.util.List;
 
-@Service
+@Service(interfaceClass = CheckitemService.class)
 public class CheckitemServiceImpl implements CheckitemService {
 
     @Autowired

@@ -9,6 +9,19 @@ import java.util.Set;
  * 角色
  */
 public class Role implements Serializable {
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", keyword='" + keyword + '\'' +
+                ", description='" + description + '\'' +
+                ", users=" + users +
+                ", permissions=" + permissions +
+                ", menus=" + menus +
+                '}';
+    }
+
     private Integer id;
     private String name; // 角色名称
     private String keyword; // 角色关键字，用于权限控制

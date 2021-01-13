@@ -52,6 +52,8 @@
 
     <dependencyManagement>
         <dependencies>
+
+
             <!--页面静态化-->
             <dependency>
                 <groupId>org.freemarker</groupId>

@@ -288,6 +288,8 @@
                 },
                 //分页查询
                 findPage() {
+                    console.log("--------")
+                    console.log(this.pagination)
                     axios.post("/checkitem/find/page.do",this.pagination)
                         .then(res => {
                             // console.log(res.data)

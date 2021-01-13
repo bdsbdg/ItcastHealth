@@ -5,6 +5,7 @@ import com.itheima.entity.QueryPageBean;
 import com.itheima.entity.Result;
 import com.itheima.pojo.CheckItem;
 import com.itheima.service.CheckitemService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +41,7 @@ public class CheckitemController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('CHECKITEM_ADD')")
     @PostMapping("/add")
     public Result addCheckitem(@Validated @RequestBody CheckItem checkItem){
             checkitemService.addCheckitem(checkItem);
@@ -52,9 +54,10 @@ public class CheckitemController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('CHECKITEM_QUERY')")
     @PostMapping("/find/page")
     public Result findPage(@Validated @RequestBody QueryPageBean queryPageBean){
-//        System.out.println(queryPageBean);
+        System.out.println(queryPageBean);
         return new Result(true, MessageConstant.QUERY_CHECKITEM_SUCCESS, checkitemService.findPage(queryPageBean));
     }
 
