@@ -14,13 +14,14 @@ import com.itheima.pojo.CheckGroup;
 import com.itheima.pojo.Setmeal;
 import com.itheima.service.CheckGroupService;
 import com.itheima.service.SetmealService;
+import com.itheima.utils.DateUtils;
 import com.itheima.utils.QiNiuUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.ShardedJedis;
 import redis.clients.jedis.ShardedJedisPool;
 
-import java.util.HashSet;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service(interfaceClass = SetmealService.class)
 public class SetmealServiceImpl implements SetmealService {
@@ -120,7 +121,69 @@ public class SetmealServiceImpl implements SetmealService {
     @Override
     public Setmeal findDetailById(Integer id) {
         return setmealDao.findDetailById(id);
+
     }
+
+    /**
+     * @return 饼图数据
+     */
+    @Override
+    public List<Map<String, Object>> findSetmeal4Gropu() {
+        List<Map<String, Object>> data = setmealDao.findSetmeal4Gropu();
+//        HashMap<String, Object> result = new HashMap<>();
+//        result.put("setmealNames",data.keySet());
+//        result.put("setmealCount",data);
+        return data;
+    }
+
+    @Override
+    public Map<String, Object> findBusinessData() {
+        /**
+         * 获得运营统计数据
+         * Map数据格式：
+         *      reportDate（当前时间）--String
+         *      todayNewMember（今日新增会员数） -> number
+         *      totalMember（总会员数） -> number
+         *      thisWeekNewMember（本周新增会员数） -> number
+         *      thisMonthNewMember（本月新增会员数） -> number
+         *      todayOrderNumber（今日预约数） -> number
+         *      todayVisitsNumber（今日到诊数） -> number
+         *      thisWeekOrderNumber（本周预约数） -> number
+         *      thisWeekVisitsNumber（本周到诊数） -> number
+         *      thisMonthOrderNumber（本月预约数） -> number
+         *      thisMonthVisitsNumber（本月到诊数） -> number
+         *      hotSetmeal（热门套餐（取前4）） -> List<Map<String,Object>>
+         */
+        HashMap<String, Object> queryParam = new HashMap<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date today = new Date();
+
+        // 今天
+        String reportDay = sdf.format(today);
+        // 星期一
+        String monday = sdf.format(DateUtils.getFirstDayOfWeek(today));
+        // 星期天
+        String sunday = sdf.format(DateUtils.getLastDayOfWeek(today));
+        // 1号
+        String firstDayOfThisMonth = sdf.format(DateUtils.getFirstDayOfThisMonth());
+        // 本月最后一天
+        String lastDayOfThisMonth = sdf.format(DateUtils.getLastDayOfThisMonth());
+
+        queryParam.put("today",reportDay);
+        queryParam.put("thisWeekFirst",monday);
+        queryParam.put("thisMonthFirst",firstDayOfThisMonth);
+        queryParam.put("thisWeekLast",sunday);
+        queryParam.put("thisMonthLast",lastDayOfThisMonth);
+
+        Map<String,Object> data = setmealDao.findBusinessData(queryParam);
+
+        List<Map<String, Object>> hotSetmeal = setmealDao.findSetmealHot();
+
+        data.put("hotSetmeal",hotSetmeal);
+        data.put("reportDate",reportDay);
+        return data;
+    }
+
 
     public void delImgKey(String imgKey){
         //         删除redis上的imgKey

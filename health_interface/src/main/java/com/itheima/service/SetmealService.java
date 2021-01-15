@@ -5,6 +5,7 @@ import com.itheima.entity.QueryPageBean;
 import com.itheima.pojo.Setmeal;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SetmealService {
     void addSetmeal(Setmeal setmeal);
@@ -20,4 +21,8 @@ public interface SetmealService {
     List<Setmeal> findAll();
 
     Setmeal findDetailById(Integer id);
+
+    List<Map<String, Object>> findSetmeal4Gropu();
+
+    Map<String, Object> findBusinessData();
 }

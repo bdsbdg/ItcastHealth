@@ -2,8 +2,11 @@ package com.itheima.dao;
 
 import com.github.pagehelper.Page;
 import com.itheima.pojo.Member;
+import org.apache.ibatis.annotations.Param;
 
+import java.rmi.MarshalledObject;
 import java.util.List;
+import java.util.Map;
 
 public interface MemberDao {
     public List<Member> findAll();
@@ -17,4 +20,6 @@ public interface MemberDao {
     public Integer findMemberCountByDate(String date);
     public Integer findMemberCountAfterDate(String date);
     public Integer findMemberTotalCount();
+    Map<String,Integer> findByYear(List<String> year);
+
 }

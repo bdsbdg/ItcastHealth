@@ -86,4 +86,38 @@
                                   LEFT JOIN t_checkitem i on cc.checkitem_id=i.id
         WHERE s.id=#{id}
     </select>
+
+    <select id="findSetmeal4Gropu" resultType="java.util.Map">
+        select
+                s.name,count(o.id) value
+        from t_setmeal s left join t_order o on s.id = o.setmeal_id
+        GROUP BY s.id,s.name
+    </select>
+
+    <select id="findBusinessData" parameterType="map" resultType="java.util.Map">
+        select
+        (SELECT COUNT(*) FROM t_member WHERE regTime = #{today}) "todayNewMember",
+        (SELECT COUNT(*) FROM t_member) totalMember,
+        (SELECT COUNT(*) FROM t_member WHERE regTime >= #{thisWeekFirst}) thisWeekNewMember,
+        (SELECT COUNT(*) FROM t_member WHERE regTime >= #{thisMonthFirst}) thisMonthNewMember,
+        (SELECT COUNT(*) FROM t_order WHERE orderDate = #{today}) todayOrderNumber,
+        (SELECT COUNT(*) FROM t_order WHERE orderDate = #{today} AND orderStatus = '已到诊') todayVisitsNumber,
+        (SELECT COUNT(*) FROM t_order WHERE orderDate between #{thisWeekFirst} and #{today}) thisWeekOrderNumber,
+        (SELECT COUNT(*) FROM t_order WHERE orderDate between #{thisWeekFirst} and #{today} AND orderStatus = '已到诊') thisWeekVisitsNumber,
+        (SELECT COUNT(*) FROM t_order WHERE orderDate between #{thisMonthFirst} and #{thisMonthLast}) thisMonthOrderNumber,
+        (SELECT COUNT(*) FROM t_order WHERE orderDate between #{thisMonthFirst} and #{thisMonthLast} AND orderStatus = '已到诊') thisMonthVisitsNumber
+    </select>
+
+    <select id="findSetmealHot" resultType="java.util.Map">
+        select
+            s.name,son.proportion,son.setmeal_count,s.remark
+        from
+            t_setmeal s join(
+                select t_order.setmeal_id,count(id) setmeal_count,oc.ocount total, (count(id)/oc.ocount) proportion from
+                        t_order,(select count(0) ocount from t_order) oc
+                GROUP BY setmeal_id
+            )son
+        on s.id=son.setmeal_id
+        order by son.setmeal_count desc limit 0,4
+    </select>
 </mapper>

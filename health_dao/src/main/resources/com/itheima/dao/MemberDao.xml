@@ -95,4 +95,11 @@
     <select id="findMemberTotalCount" resultType="int">
         select count(id) from t_member
     </select>
+
+    <select id="findByYear" resultType="java.util.Map">
+        select
+        <foreach collection="list" item="month" index="index" separator=",">
+            (select count(id) from t_member where regTime &lt;=#{month}"-31") #{month}
+        </foreach>
+    </select>
 </mapper>
