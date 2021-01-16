@@ -22,6 +22,8 @@
     <security:http pattern="/js/**" security="none"/>
     <security:http pattern="/plugins/**" security="none"/>
     <security:http pattern="/login.html" security="none"/>
+    <security:http pattern="/login/success.do" security="none"/>
+    <security:http pattern="/login/fail.do" security="none"/>
     <security:http pattern="/favicon.ico" security="none"/>
     <security:http pattern="/" security="none"/>
 
@@ -33,8 +35,8 @@
                              username-parameter="username"
                              password-parameter="password"
                              login-processing-url="/login.do"
-                             authentication-failure-url="/login.html"
-                             default-target-url="/pages/main.html"
+                             authentication-failure-url="/login/fail.do"
+                             default-target-url="/login/success.do"
                              always-use-default-target="true"
         />
         <security:headers>

@@ -26,15 +26,15 @@
                         <span class="svg-container svg-container_login">
                           <span class="user"></span>
                         </span>
-                        <input type="text" name="username" placeholder="请输入用户名" />
+                        <input type="text" v-model="username" name="username" placeholder="请输入用户名" />
                       </div>
                       <div>
                         <span class="svg-container">
                           <span class="username"></span>
                         </span>
-                        <input type="password" name="password" placeholder="请输入密码"/>
+                        <input type="password" v-model="password" name="password" placeholder="请输入密码"/>
                       </div>
-                      <input type="submit" style="width:100%;margin-bottom:30px;" value="登录"></input>
+                      <input type="button" @click="login" style="width:100%;margin-bottom:30px;" value="登录"></input>
                 </form>
                 </div>
               </div>
@@ -43,4 +43,27 @@
     <!-- 引入组件库 -->
     <script src="js/vue.js"></script>
     <script src="plugins/elementui/index.js"></script>
+    <script src="js/axios-0.18.0.js"></script>
+    <script>
+        var vue = new Vue({
+            el:'#app',
+            data:{
+                username:'admin',
+                password:'1234'
+            },
+            methods:{
+                login(){
+                    // 提交数据
+                    axios.post('/login.do?username='+this.username+"&password=" + this.password).then(res => {
+                        if(res.data.flag){
+                            window.location.href="/pages/main.html";
+                        }else{
+                            this.$message.error(res.data.msg);
+                        }
+                    })
+                }
+            }
+
+        });
+    </script>
 </html>
