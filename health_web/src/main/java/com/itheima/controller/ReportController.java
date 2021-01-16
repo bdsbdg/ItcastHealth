@@ -5,6 +5,8 @@ import com.itheima.constant.MessageConstant;
 import com.itheima.entity.Result;
 import com.itheima.service.MemberService;
 import com.itheima.service.SetmealService;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.List;
@@ -67,7 +70,7 @@ public class ReportController {
         return new Result(true, "获取报表数据成功",data);
     }
 
-    @GetMapping("/exportBusinessReport")
+    @GetMapping("/exportBusinessReportExcel")
     public void exportBusinessReport(HttpServletRequest req, HttpServletResponse res){
         // 获取excel表路径
         String excel_template_path = req.getSession().getServletContext().getRealPath("/template/report_template.xlsx");
@@ -124,5 +127,35 @@ public class ReportController {
             e.printStackTrace();
         }
 
+    }
+
+    @GetMapping("/exportBusinessReportPdf")
+    public void exportBusinessReportPdf(HttpServletRequest req, HttpServletResponse res) throws Exception {
+        // 1. 查询运营数据统计
+        Map<String, Object> reportData = setmealService.findBusinessData();
+        // 2. 定义模板所在
+        String path = req.getSession().getServletContext().getRealPath("/template");
+        String jrxml = path+"/" + "business.jrxml";
+        // 3. 定义编译后的jasper
+        String jasper = path+"/" + "business.jasper";
+        JasperCompileManager.compileReportToFile(jrxml, jasper);
+        // 4. 填充数据
+        List<Map<String,Object>> hotSetmeal = (List<Map<String,Object>>)reportData.get("hotSetmeal");
+        reportData.put("todayNewMember",Math.toIntExact((long) reportData.get("todayNewMember")));
+        reportData.put("totalMember",Math.toIntExact((long) reportData.get("totalMember")));
+        reportData.put("thisWeekNewMember",Math.toIntExact((long) reportData.get("thisWeekNewMember")));
+        reportData.put("thisMonthNewMember",Math.toIntExact((long) reportData.get("thisMonthNewMember")));
+        reportData.put("todayOrderNumber",Math.toIntExact((long) reportData.get("todayOrderNumber")));
+        reportData.put("todayVisitsNumber",Math.toIntExact((long) reportData.get("todayVisitsNumber")));
+        reportData.put("thisWeekOrderNumber",Math.toIntExact((long) reportData.get("thisWeekOrderNumber")));
+        reportData.put("thisWeekVisitsNumber",Math.toIntExact((long) reportData.get("thisWeekVisitsNumber")));
+        reportData.put("thisMonthOrderNumber",Math.toIntExact((long) reportData.get("thisMonthOrderNumber")));
+        reportData.put("thisMonthVisitsNumber",Math.toIntExact((long) reportData.get("thisMonthVisitsNumber")));
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasper, reportData, new JRBeanCollectionDataSource(hotSetmeal));
+        // 5. 设置响应的内容体格式，设置响应头信息
+        res.setContentType("application/pdf");
+        res.setHeader("Content-Disposition","attachment;filename=business.pdf");
+        // 6. 导出到输出流
+        JasperExportManager.exportReportToPdfStream(jasperPrint, res.getOutputStream());
     }
 }

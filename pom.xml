@@ -48,12 +48,17 @@
         <spring-tx.version>5.0.2.RELEASE</spring-tx.version>
         <poi.version>3.14</poi.version>
         <freemarker.version>2.3.23</freemarker.version>
+        <jasperreports>6.8.0</jasperreports>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-
-
+            <!--导出pdf的模板解析-->
+            <dependency>
+                <groupId>net.sf.jasperreports</groupId>
+                <artifactId>jasperreports</artifactId>
+                <version>${jasperreports}</version>
+            </dependency>
             <!--页面静态化-->
             <dependency>
                 <groupId>org.freemarker</groupId>
