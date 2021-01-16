@@ -40,7 +40,7 @@
         // 使用刚指定的配置项和数据显示图表。
         //myChart.setOption(option);
 
-        axios.get("/report/member/year.do").then((res)=>{
+        axios.get("/report/member/year.do").then((res) => {
             myChart1.setOption(
                                 {
                                     title: {
@@ -51,7 +51,7 @@
                                         data:['会员数量']
                                     },
                                     xAxis: {
-                                        data: res.data.data.month
+                                        data: res.data.data.months
                                     },
                                     yAxis: {
                                         type:'value'
