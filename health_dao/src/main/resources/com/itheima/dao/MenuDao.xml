@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.MenuDao">
+
+    <resultMap id="menuLevel_1" type="com.itheima.pojo.Menu" autoMapping="true">
+        <id property="id" column="id"/>
+        <collection property="children" ofType="com.itheima.pojo.Menu" column="id" select="findLevel_2" autoMapping="true"/>
+    </resultMap>
+
+    <resultMap id="menuLevel_2" type="com.itheima.pojo.Menu" autoMapping="true">
+        <id property="id" column="id"/>
+        <collection property="children" ofType="com.itheima.pojo.Menu" column="id"/>
+    </resultMap>
+
+
+
+    <select id="findAll" resultMap="menuLevel_1">
+        select * from t_menu where level=1
+    </select>
+
+    <select id="findLevel_2" resultMap="menuLevel_2">
+        select * from t_menu where parentMenuId=#{id}
+    </select>
+
+    <insert id="addLevel1">
+        insert into t_menu(name,linkUrl,path,priority,description,icon,level) values(#{name},#{linkUrl},#{path},#{priority},#{description},#{icon},1)
+    </insert>
+    <insert id="addLevel2">
+        insert into t_menu(name,linkUrl,path,priority,description,icon,parentMenuId,level)
+            values(#{name},#{linkUrl},#{path},#{priority},#{description},#{icon},#{parentMenuId},2)
+    </insert>
+
+    <update id="updateMenu">
+        update t_menu set name=#{name},linkUrl=#{linkUrl},path=#{path}
+            ,priority=#{priority},description=#{description},icon=#{icon},level=#{level},parentMenuId=#{parentMenuId}
+        where id=#{id}
+    </update>
+
+    <delete id="deleteMenu">
+        delete from t_menu where id=#{id}
+    </delete>
+
+    <select id="findMenuById" resultType="com.itheima.pojo.Menu">
+        select * from t_menu where id=#{id}
+    </select>
+
+    <select id="haveSon" resultType="java.lang.Long">
+        select count(0) from t_menu where parentMenuId=#{id}
+    </select>
+
+    <select id="findPage" resultMap="menuLevel_1">
+        select * from t_menu where level=1
+            <if test="queryParam!=null ">
+               or name like #{queryParam} or description like #{queryParam}
+            </if>
+    </select>
+
+    <select id="getIdInTableCount" resultType="com.itheima.pojo.Menu">
+        select id,parentMenuId from t_menu where id in(
+        <foreach collection="collection" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </select>
+
+    <select id="findAllParent" resultType="com.itheima.pojo.Menu">
+        select * from t_menu where level=1
+    </select>
+</mapper>

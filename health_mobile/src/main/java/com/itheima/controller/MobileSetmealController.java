@@ -1,6 +1,7 @@
 package com.itheima.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.alibaba.fastjson.JSON;
 import com.itheima.constant.MessageConstant;
 import com.itheima.entity.Result;
 import com.itheima.pojo.Setmeal;
@@ -9,6 +10,7 @@ import com.itheima.utils.CommonUtils;
 import com.itheima.utils.QiNiuUtils;
 import com.itheima.utils.SMSUtils;
 import com.itheima.utils.ValidateCodeUtils;
+import com.qiniu.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -35,11 +37,28 @@ public class MobileSetmealController {
 
     @GetMapping("/all")
     public Result setmealAll(){
-        List<Setmeal> setmealList = setmealService.findAll();
-        setmealList.forEach(setmeal -> {
-            setmeal.setImg(QiNiuUtils.DOMAIN + setmeal.getImg());
-        });
-        return new Result(true, MessageConstant.QUERY_SETMEAL_SUCCESS,setmealList);
+        ShardedJedis jedisConn = shardedJedisPool.getResource();
+        try {
+            String setmealAllJson = jedisConn.get(MessageConstant.SETMEAL_ALL_KEY);
+            if (setmealAllJson==null){
+                List<Setmeal> setmealList = setmealService.findAll();
+                setmealList.forEach(setmeal -> {
+                    setmeal.setImg(QiNiuUtils.DOMAIN + setmeal.getImg());
+                });
+                jedisConn.setex(MessageConstant.SETMEAL_ALL_KEY,10, JSON.toJSONString(setmealList));
+                return new Result(true, MessageConstant.QUERY_SETMEAL_SUCCESS,setmealList);
+            }
+            else {
+                return new Result(true, MessageConstant.QUERY_SETMEAL_SUCCESS,JSON.parseArray(setmealAllJson, Setmeal.class));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return new Result(false, MessageConstant.QUERY_SETMEAL_FAIL);
+        }finally {
+            jedisConn.close();
+        }
+
+
     }
 
 

@@ -89,5 +89,14 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-
+    /**
+     * 根据日期删除预约设置历史数据
+     * @param lastMothStr
+     * @return
+     */
+    @Override
+    public int deleteHistoricalDataByDate(String lastMothStr) {
+        int count = orderDao.deleteHistoricalDataByDate(lastMothStr);
+        return count;
+    }
 }

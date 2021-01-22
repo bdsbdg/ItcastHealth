@@ -21,5 +21,7 @@ public interface MemberDao {
     public Integer findMemberCountAfterDate(String date);
     public Integer findMemberTotalCount();
     Map<String,Integer> findByYear(List<String> year);
+    List<Map<String,Object>> findSexCountByGroup();
 
+    List<String> findAgeCountByGroup();
 }

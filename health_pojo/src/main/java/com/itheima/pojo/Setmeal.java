@@ -7,6 +7,40 @@ import java.util.List;
  * 体检套餐
  */
 public class Setmeal implements Serializable {
+    @Override
+    public String toString() {
+        return "Setmeal{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", code='" + code + '\'' +
+                ", helpCode='" + helpCode + '\'' +
+                ", sex='" + sex + '\'' +
+                ", age='" + age + '\'' +
+                ", price=" + price +
+                ", remark='" + remark + '\'' +
+                ", attention='" + attention + '\'' +
+                ", img='" + img + '\'' +
+                ", checkGroups=" + checkGroups +
+                ", checkGroupsId=" + checkGroupsId +
+                '}';
+    }
+
+    public Setmeal(Integer id, String name, String code, String helpCode, String sex, String age, Float price, String remark, String attention, String img, List<CheckGroup> checkGroups, List<Integer> checkGroupsId) {
+
+        this.id = id;
+        this.name = name;
+        this.code = code;
+        this.helpCode = helpCode;
+        this.sex = sex;
+        this.age = age;
+        this.price = price;
+        this.remark = remark;
+        this.attention = attention;
+        this.img = img;
+        this.checkGroups = checkGroups;
+        this.checkGroupsId = checkGroupsId;
+    }
+
     private Integer id;
     private String name;
     private String code;
@@ -22,6 +56,9 @@ public class Setmeal implements Serializable {
 
     public List<Integer> getCheckGroupsId() {
         return checkGroupsId;
+    }
+
+    public Setmeal() {
     }
 
     public void setCheckGroupsId(List<Integer> checkGroupsId) {

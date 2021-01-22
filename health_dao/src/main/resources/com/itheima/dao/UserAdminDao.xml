@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.UserAdminDao">
+
+    <resultMap id="userMapping" type="com.itheima.pojo.User" autoMapping="true">
+        <id column="id" property="id"/>
+        <collection property="roles" ofType="com.itheima.pojo.Role" select="com.itheima.dao.RoleDao.findByUserId" column="id"/>
+    </resultMap>
+
+    <select id="findPage" resultMap="userMapping">
+        select
+            id,DATE_FORMAT(birthday,"%Y-%m-%d") birthday,gender,username,remark,station,telephone
+        from t_user
+    </select>
+
+    <insert id="addUser" keyProperty="id" useGeneratedKeys="true">
+        insert into t_user(birthday,gender,username,password,remark,station,telephone)
+            values(#{birthday},#{gender},#{username},#{password},#{remark},#{station},#{telephone})
+    </insert>
+    <select id="findById" resultType="com.itheima.pojo.User">
+        select id,birthday,gender,username,password,remark,station,telephone from t_user where id=#{id}
+    </select>
+    <select id="findNameById" resultType="string">
+        select username from t_user where id=#{id}
+    </select>
+    <update id="setUser">
+        update t_user set birthday=#{birthday},gender=#{gender},username=#{username}
+            ,remark=#{remark},station=#{station},telephone=#{telephone}
+        where id=#{id}
+    </update>
+
+    <delete id="deleteUserById">
+        delete from t_user where id=#{id}
+    </delete>
+
+    <select id="findAll" resultType="com.itheima.pojo.User">
+        select id,birthday,gender,username,remark,station,telephone from t_user
+    </select>
+
+    <select id="getIdInTableCount" resultType="long">
+        select count(0) from t_user where id in(
+        <foreach collection="collection" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </select>
+
+    <select id="findByName" resultType="java.lang.Long">
+        select count(0) from t_user where username=#{username}
+    </select>
+
+    <select id="findUserByName" resultType="com.itheima.pojo.User">
+        select id,birthday,gender,username,password,remark,station,telephone from t_user where username=#{username}
+    </select>
+
+    <select id="getPasswordByUsername" resultType="com.itheima.pojo.User">
+        select id,password from t_user where username=#{username}
+    </select>
+
+    <update id="setPasswordById">
+        update t_user set password=#{password} where id=#{id}
+    </update>
+</mapper>

@@ -90,6 +90,7 @@ public class SetmealController {
     @ResponseBody
     @PostMapping("/find/page")
     public Result findPage(@Validated @RequestBody QueryPageBean queryPageBean){
+        System.out.println(queryPageBean);
         return new Result(true, MessageConstant.QUERY_SETMEAL_SUCCESS, setmealService.findPage(queryPageBean));
     }
 
@@ -108,7 +109,7 @@ public class SetmealController {
     @PutMapping("/set")
     public Result setCheckGroup(@Validated @RequestBody Setmeal setmeal){
 //        System.out.println(setmeal);
-
+//        System.out.println(setmeal);
         setmealService.setSetmeal(setmeal);
         return new Result(true, "编辑套餐成功");
     }

@@ -3,6 +3,7 @@ package com.itheima.pojo;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -29,6 +30,26 @@ public class Role implements Serializable {
     private Set<User> users = new HashSet<User>(0);
     private Set<Permission> permissions = new HashSet<Permission>(0);
     private LinkedHashSet<Menu> menus = new LinkedHashSet<Menu>(0);
+
+    private List<Integer> permissionIds;
+    private List<Integer> menuIds;
+
+
+    public List<Integer> getPermissionIds() {
+        return permissionIds;
+    }
+
+    public void setPermissionIds(List<Integer> permissionIds) {
+        this.permissionIds = permissionIds;
+    }
+
+    public List<Integer> getMenuIds() {
+        return menuIds;
+    }
+
+    public void setMenuIds(List<Integer> menuIds) {
+        this.menuIds = menuIds;
+    }
 
     public Integer getId() {
         return id;

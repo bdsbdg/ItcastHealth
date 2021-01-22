@@ -69,12 +69,12 @@ public class CheckitemController {
     @ResponseBody
     @DeleteMapping("/delete/{id}")
     public Result deleteCheckitem(@PathVariable("id") @Min(value = 1,message = "id不能小于1")Integer id){
-        System.out.println("delete:"+id);
-        int count = checkitemService.deleteById(id);
-        if (count!=0){
-            return new Result(true, MessageConstant.DELETE_CHECKITEM_SUCCESS);
-        }
-        return new Result(false, MessageConstant.DELETE_CHECKITEM_FAIL);
+//        System.out.println("delete:"+id);
+        checkitemService.deleteById(id);
+//        if (count!=0){
+        return new Result(true, MessageConstant.DELETE_CHECKITEM_SUCCESS);
+//        }
+//        return new Result(false, MessageConstant.DELETE_CHECKITEM_FAIL);
     }
 
     /**

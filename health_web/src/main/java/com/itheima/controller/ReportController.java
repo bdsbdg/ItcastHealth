@@ -9,9 +9,7 @@ import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -19,8 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 @RequestMapping("/report")
@@ -41,6 +40,18 @@ public class ReportController {
         List<Map<String, Object>> data = setmealService.findSetmeal4Gropu();
 
         return new Result(true, MessageConstant.GET_SETMEAL_COUNT_REPORT_SUCCESS, data);
+    }
+
+    @GetMapping("/member_sex/proportion")
+    public Result member_sexProportionReport(){
+        List<HashMap<String, Object>> data = memberService.findSexCountByGroup();
+        return new Result(true, MessageConstant.GET_MEMBER_NUMBER_REPORT_SUCCESS, data);
+    }
+
+    @GetMapping("/member_age/proportion")
+    public Result member_ageProportionReport(){
+        List<Map<String, Object>> data = memberService.findAgeCountByGroup();
+        return new Result(true, MessageConstant.GET_MEMBER_NUMBER_REPORT_SUCCESS, data);
     }
 
     @GetMapping("/member/year")
@@ -158,4 +169,47 @@ public class ReportController {
         // 6. 导出到输出流
         JasperExportManager.exportReportToPdfStream(jasperPrint, res.getOutputStream());
     }
+
+    @PostMapping("/getMemberReport")
+    public Result getMemberReport(@RequestBody Map<String, String> dates) throws ParseException {
+        SimpleDateFormat sdf = null;
+        Date startDate = null;
+        Date endDate = null;
+        try {
+            String startTime = dates.get("startTime");
+            String endTime = dates.get("endTime");
+            sdf = new SimpleDateFormat("yyyy-MM");
+
+            startDate = sdf.parse(startTime);
+            endDate = sdf.parse(endTime);
+        } catch (ParseException e) {
+            return new Result(false, MessageConstant.DATE_FORMAT_ERROR);
+        }
+
+        if (endDate.before(startDate)) {
+            return new Result(false, MessageConstant.DATE_RANGE_ERROR);
+        }
+        Calendar car = Calendar.getInstance();
+        car.setTime(startDate);
+
+        List<String> months = new ArrayList<>();
+
+        while (true) {
+            Date currentDate = car.getTime();
+            car.add(Calendar.MONTH, 1);
+            if (endDate.before(currentDate)) {
+                break;
+            }
+            months.add(sdf.format(currentDate));
+        }
+
+
+        List<Integer> memberCount = memberService.getMemberReport(months);
+        // 返回给页面
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("months", months);
+        map.put("memberCount", memberCount);
+        return new Result(true, MessageConstant.GET_MEMBER_NUMBER_REPORT_SUCCESS, map);
+    }
+
 }

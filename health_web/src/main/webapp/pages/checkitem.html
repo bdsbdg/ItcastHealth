@@ -304,6 +304,7 @@
                 // 切换每页条数
                 handleSizeChange(val){
                     this.pagination.pageSize = val;
+                    this.findPage()
                 },
                 //切换页码
                 handleCurrentChange(currentPage) {
@@ -315,6 +316,7 @@
                 },
                 // 弹出添加窗口
                 handleCreate() {
+                    this.formData={}
                     this.dialogFormVisible = true;
                 },
                 // 弹出编辑窗口

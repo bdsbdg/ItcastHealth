@@ -99,7 +99,10 @@ public class CheckGroupServiceImpl implements CheckGroupService {
         // 删除旧多对多关系
         checkGroupCheckitemM2M.clearBindByCheckGroup(checkGroup.getId());
         // 添加新多对多关系
-        checkGroupCheckitemM2M.addChekitems4Group(new HashSet<Integer>(checkGroup.getCheckItemsId()),checkGroup.getId());
+        HashSet<Integer> ids = new HashSet<>(checkGroup.getCheckItemsId());
+        if (ids.size()>0){
+            checkGroupCheckitemM2M.addChekitems4Group(ids,checkGroup.getId());
+        }
     }
 
     @Override

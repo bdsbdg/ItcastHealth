@@ -95,6 +95,11 @@ public class RequestValidateExceptionHandle {
         return new Result(false, "没有权限");
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+        public Result handIllegalStateException(IllegalStateException he){
+        return new Result(false, "会话已失效请重新登录!");
+    }
+
 
     @ExceptionHandler(Exception.class)
     public Result commonExceptionHandler(Exception exception) {

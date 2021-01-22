@@ -22,4 +22,11 @@ public interface OrderDao {
     void addOrderSetting(OrderSetting orderSetting);
 
     int addReservationsByOrderDate(Date orderDate);
+
+    /**
+     * 根据日期删除预约设置历史数据
+     * @param lastMothStr
+     * @return
+     */
+    int deleteHistoricalDataByDate(String lastMothStr);
 }

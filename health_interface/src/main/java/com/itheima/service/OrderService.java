@@ -15,4 +15,5 @@ public interface OrderService {
 
     void setOrderByDate(OrderSetting orderSetting) throws ServiceException;
 
+    int deleteHistoricalDataByDate(String lastMothStr);
 }

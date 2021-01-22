@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 页面meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>传智健康</title>
+    <meta name="description" content="传智健康">
+    <meta name="keywords" content="传智健康">
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="../plugins/elementui/index.css">
+    <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- 引入组件库 -->
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script src="../js/vue.js"></script>
+    <script src="../plugins/elementui/index.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+    <style>
+        .datatable {
+            position: relative;
+            box-sizing: border-box;
+            -webkit-box-flex: 1;
+            width: 100%;
+            max-width: 100%;
+            font-size: 14px;
+            color: rgb(96, 98, 102);
+            overflow: hidden;
+            flex: 1 1 0%;
+        }
+        .datatable td, .datatable th {
+            padding: 12px 0;
+            min-width: 0;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            text-overflow: ellipsis;
+            vertical-align: middle;
+            position: relative;
+            text-align: left;
+        }
+    </style>
+    <style>
+        .demo-table-expand {
+            font-size: 0;
+        }
+        .demo-table-expand label {
+            width: 90px;
+            color: #99a9bf;
+        }
+        .demo-table-expand .el-form-item {
+            margin-right: 0;
+            margin-bottom: 0;
+            /*width: 50%;*/
+        }
+    </style>
+    <style>
+        .el-table__expanded-cell>div{
+            /*position: relative;*/
+            /*display: inline-block;*/
+            float: left;
+            margin: 1%;
+        }
+        /*.el-table--enable-row-transition{*/
+        /*    position: absolute;*/
+        /*}*/
+    </style>
+
+</head>
+<body class="hold-transition">
+<div id="app">
+    <div class="content-header">
+        <h1>预约管理<small>检查组管理</small></h1>
+        <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
+            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>预约管理</el-breadcrumb-item>
+            <el-breadcrumb-item>检查组管理</el-breadcrumb-item>
+        </el-breadcrumb>
+    </div>
+    <div class="app-container">
+        <div class="box">
+            <!--top bar-->
+            <div class="filter-container">
+                <el-input placeholder="编码/名称/助记码" v-model="pagination.queryString" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"></el-input>
+                <el-button @click="findPage()" class="dalfBut">查询</el-button>
+                <el-button type="primary" class="butT" @click="handleCreate()">创建账号</el-button>
+            </div>
+
+            <!--展示-->
+            <el-table
+                    :data="dataList"
+                    style="width: 100%">
+
+                <!--角色信息展示-->
+                <el-table-column type="expand">
+                    <template slot-scope="scope">
+                        <el-form label-position="left" inline class="demo-table-expand">
+                            <table class="datatable">
+                                <thead>
+                                    <tr>
+                                        <th>角色名</th>
+                                        <th>角色KEY值</th>
+                                        <th>角色描述</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="(role,index) in scope.row.roles">
+                                    <td><label :for="index">{{role.name}}</label></td>
+                                    <td><label :for="index">{{role.keyword}}</label></td>
+                                    <td><label :for="index">{{role.description}}</label></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </el-form>
+                    </template>
+                </el-table-column>
+
+                <el-table-column
+                        label="帐号名称"
+                        prop="username">
+                </el-table-column>
+                <el-table-column
+                        label="账号职位"
+                        prop="station">
+                </el-table-column>
+                <el-table-column
+                        label="联系电话"
+                        prop="telephone">
+                </el-table-column>
+                <el-table-column
+                        label="备注"
+                        prop="remark">
+                </el-table-column>
+                <el-table-column
+                        label="生日">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.birthday==null?"未填写":scope.row.birthday.split(" ")[0]}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="性别"
+                        align="center">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.gender == '1' ? '男' : '女'}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+                        <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+
+            <!--分页-->
+            <div class="pagination-container">
+                <el-pagination
+                        class="pagiantion"
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="pagination.currentPage"
+                        :page-sizes="[10, 20, 30, 40]"
+                        :page-size="10"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="pagination.total">
+                </el-pagination>
+                <!--                        <el-pagination-->
+                <!--                            class="pagiantion"-->
+                <!--                            @current-change="handleCurrentChange"-->
+                <!--                            :current-page="pagination.currentPage"-->
+                <!--                            :page-size="pagination.pageSize"-->
+                <!--                            layout="total, prev, pager, next, jumper"-->
+                <!--                            :total="pagination.total">-->
+                <!--                        </el-pagination>-->
+            </div>
+
+            <!-- 新增标签弹层 -->
+            <div class="add-form">
+                <el-dialog title="新增检查组" :visible.sync="dialogFormVisible">
+                    <template>
+                        <el-tabs v-model="activeName" type="card">
+                            <el-tab-pane label="角色信息填写" name="first">
+                                <el-form label-position="right" label-width="100px">
+                                    <el-row>
+                                        <el-col :span="12">
+                                            <el-form-item label="账号名">
+                                                <el-input v-model="formData.username"/>
+                                            </el-form-item>
+                                        </el-col>
+                                        <el-col :span="12">
+                                            <el-form-item label="密码">
+                                                <el-input v-model="formData.password"/>
+                                            </el-form-item>
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="12">
+                                            <el-form-item label="使用人性别">
+                                                <el-select v-model="formData.gender">
+                                                    <el-option label="男" value="1"></el-option>
+                                                    <el-option label="女" value="2"></el-option>
+                                                </el-select>
+                                            </el-form-item>
+                                        </el-col>
+                                        <!--生日输入-->
+                                        <el-col :span="12">
+                                            <el-form-item label="使用人生日">
+                                                <div class="block">
+                                                    <el-date-picker
+                                                            v-model="formData.birthday"
+                                                            type="date"
+                                                            value-format="yyyy-MM-dd"
+                                                            placeholder="选择生日">
+                                                    </el-date-picker>
+                                                </div>
+                                            </el-form-item>
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="12">
+                                            <el-form-item label="使用人电话">
+                                                <el-input v-model="formData.telephone"></el-input>
+                                            </el-form-item>
+                                        </el-col>
+                                        <el-col :span="12">
+                                            <el-form-item label="岗位">
+                                                <el-input v-model="formData.station"/>
+                                            </el-form-item>
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="24">
+                                            <el-form-item label="备注">
+                                                <el-input v-model="formData.remark" type="textarea"></el-input>
+                                            </el-form-item>
+                                        </el-col>
+                                    </el-row>
+                                </el-form>
+                            </el-tab-pane>
+                            <el-tab-pane label="可选角色" name="second2">
+                                <!--选择项-->
+                                <div class="checkScrol">
+                                    <table class="datatable">
+                                        <thead>
+                                        <tr>
+                                            <th>选择</th>
+                                            <th>角色名</th>
+                                            <th>角色KEY值</th>
+                                            <th>角色描述</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="c in roleTable">
+                                            <td>
+                                                <input :id="c.id" v-model="roleIds" type="checkbox" :value="c.id">
+                                            </td>
+                                            <td><label :for="c.id">{{c.name}}</label></td>
+                                            <td><label :for="c.id">{{c.keyword}}</label></td>
+                                            <td><label :for="c.id">{{c.description}}</label></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </el-tab-pane>
+
+                        </el-tabs>
+                    </template>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="dialogFormVisible = false">取消</el-button>
+                        <el-button type="primary" @click="handleAdd()">确定</el-button>
+                    </div>
+                </el-dialog>
+            </div>
+
+            <!-- 编辑标签弹层 -->
+            <div class="add-form">
+                <el-dialog title="新增检查组" :visible.sync="dialogFormVisible4Edit">
+                    <template>
+                        <el-tabs v-model="activeName" type="card">
+                            <el-tab-pane label="角色信息填写" name="first">
+                                <el-form label-position="right" label-width="100px">
+                                    <el-row>
+                                        <el-col :span="12">
+                                            <el-form-item label="账号名">
+                                                <el-input v-model="formData.username"/>
+                                            </el-form-item>
+                                        </el-col>
+<!--                                        <el-col :span="12">-->
+<!--                                            <el-form-item label="密码">-->
+<!--                                                <el-input v-model="formData.password"/>-->
+<!--                                            </el-form-item>-->
+<!--                                        </el-col>-->
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="12">
+                                            <el-form-item label="使用人性别">
+                                                <el-select v-model="formData.gender">
+                                                    <el-option label="男" value="1"></el-option>
+                                                    <el-option label="女" value="2"></el-option>
+                                                </el-select>
+                                            </el-form-item>
+                                        </el-col>
+                                        <!--生日输入-->
+                                        <el-col :span="12">
+                                            <el-form-item label="使用人生日">
+                                                <div class="block">
+                                                    <el-date-picker
+                                                            v-model="formData.birthday"
+                                                            type="date"
+                                                            value-format="yyyy-MM-dd"
+                                                            placeholder="选择生日">
+                                                    </el-date-picker>
+                                                </div>
+                                            </el-form-item>
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="12">
+                                            <el-form-item label="使用人电话">
+                                                <el-input v-model="formData.telephone"></el-input>
+                                            </el-form-item>
+                                        </el-col>
+                                        <el-col :span="12">
+                                            <el-form-item label="岗位">
+                                                <el-input v-model="formData.station"/>
+                                            </el-form-item>
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :span="24">
+                                            <el-form-item label="备注">
+                                                <el-input v-model="formData.remark" type="textarea"></el-input>
+                                            </el-form-item>
+                                        </el-col>
+                                    </el-row>
+                                </el-form>
+                            </el-tab-pane>
+                            <el-tab-pane label="可选角色" name="second2">
+                                <!--选择项-->
+                                <div class="checkScrol">
+                                    <table class="datatable">
+                                        <thead>
+                                        <tr>
+                                            <th>选择</th>
+                                            <th>角色名</th>
+                                            <th>角色KEY值</th>
+                                            <th>角色描述</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="c in roleTable">
+                                            <td>
+                                                <input :id="c.id" v-model="roleIds" type="checkbox" :value="c.id">
+                                            </td>
+                                            <td><label :for="c.id">{{c.name}}</label></td>
+                                            <td><label :for="c.id">{{c.keyword}}</label></td>
+                                            <td><label :for="c.id">{{c.description}}</label></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </el-tab-pane>
+                        </el-tabs>
+                    </template>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="dialogFormVisible4Edit = false">取消</el-button>
+                        <el-button type="primary" @click="handleEdit()">确定</el-button>
+                    </div>
+                </el-dialog>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data:{
+            activeName:'first',//添加/编辑窗口Tab标签名称
+            pagination: {//分页相关属性
+                currentPage: 1,
+                pageSize:10,
+                total:100,
+                queryString:null,
+            },
+            dataList: [],//列表数据
+            formData: {},//表单数据
+
+            roleTable:[],//新增和编辑表单中对应的角色列表数据
+            roleIds:[],//新增和编辑表单中检查项对应的复选框，基于双向绑定可以进行回显和数据提交
+
+            dialogFormVisible: false,//控制添加窗口显示/隐藏
+            dialogFormVisible4Edit: false,
+            c:false//控制编辑窗口显示/隐藏
+        },
+        created() {
+            this.findPage();
+        },
+        methods: {
+            //编辑
+            handleEdit() {
+                this.formData["roleIds"] = this.roleIds;
+                console.log(this.formData)
+                axios.put("/user/set.do",this.formData)
+                    .then(res => {
+                        // console.log(res.data);
+                        if (res.data.flag){
+                            this.$message.success(res.data.msg);
+                            this.findPage();
+                        }else {
+                            this.$message.error(res.data.msg);
+                            this.findPage();
+                        }
+                    })
+                this.dialogFormVisible4Edit = false;
+                this.flushSubmitData();
+            },
+            //添加
+            handleAdd () {
+                this.formData["roleIds"] = this.roleIds
+                console.log(this.formData)
+                axios.post("/user/add.do",this.formData)
+                    .then(res => {
+                        if (res.data.flag){
+                            // 添加成功
+                            this.$message.success(res.data.msg);
+                            // 清空表单，关闭添加页，刷新页面
+                            this.findPage()
+                        }else{
+                            this.$message.error(res.data.msg);
+                            this.findPage()
+                        }
+                    })
+                this.flushSubmitData()
+                this.dialogFormVisible = false
+            },
+            // 切换每页条数
+            handleSizeChange(val){
+                this.pagination.pageSize = val;
+                this.findPage()
+            },
+            //切换页码
+            handleCurrentChange(currentPage) {
+                this.pagination.currentPage = currentPage;
+                this.findPage()
+            },
+            //分页查询
+            findPage() {
+                axios.post("/user/find/page.do",this.pagination)
+                    .then(res => {
+                        // console.log(res.data)
+                        if (res.data.flag){
+                            this.dataList = res.data.data.rows;
+                            this.pagination.total = res.data.data.total;
+                        }else {
+                            this.$message.error(res.data.msg);
+                        }
+                    })
+            },
+            // 重置表单
+            resetForm() {
+            },
+            // 弹出添加窗口
+            getRoles(){
+                // 获取所有角色
+                axios.get("/role/find/all.do")
+                    .then(res => {
+                        if (res.data.flag){
+                            // 获取到了
+                            this.roleTable = res.data.data
+                        }else{
+                            this.$message.error(res.data.msg);
+                        }
+                    })
+            },
+            handleCreate() {
+                this.dialogFormVisible = true;
+                this.flushSubmitData();
+                // 查询检查项列表
+                this.getRoles();
+            },
+            // 弹出编辑窗口
+            handleUpdate(row) {
+                // console.log(row)
+                // 先获取该项信息
+                // 获取该对象
+                axios.get("/user/find/"+ row.id +".do")
+                    .then(res => {
+                        if (res.data.flag){
+                            // 有该检查项  表赋值
+                            // console.log(res.data.data)
+                            this.dialogFormVisible4Edit = true;
+                            this.formData = res.data.data;
+                            this.roleTable = res.data.data.roles;
+                            this.roleIds = res.data.data.roleIds;
+                        }else {
+                            // 已经被干掉了  刷新  弹框
+                            this.findPage();
+                            this.$message.error(res.data.msg);
+                        }
+                    })
+            },
+
+            handleDelete(row) {
+                this.$confirm('此操作将永久删除该账号, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    // 确定
+                    // 发送删除请求
+                    axios.delete("/user/delete/"+ row.id +".do")
+                        .then(res => {
+                            if (res.data.flag){
+                                this.$message({
+                                    type: 'success',
+                                    message: '删除成功!'
+                                });
+                                this.findPage();
+                            }else {
+                                this.$message({
+                                    type: 'error',
+                                    message: res.data.msg
+                                });
+                            }
+                        })
+
+                }).catch(() => {
+                    // 取消
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+
+            // 刷新表单
+            flushSubmitData(){
+                this.formData= {};//表单数据
+                this.roleTable=[];//新增和编辑表单中检查项对应的复选框，基于双向绑定可以进行回显和数据提交
+                this.roleIds=[];//新增和编辑表单中检查项对应的复选框，基于双向绑定可以进行回显和数据提交
+            },
+            // 下拉详情懒加载
+            load(tree, treeNode, resolve){
+                setTimeout(() => {
+                    resolve([
+                        {
+                            id: 31,
+                            date: '2016-05-01',
+                            name: '王小虎',
+                            address: '上海市普陀区金沙江路 1519 弄'
+                        }, {
+                            id: 32,
+                            date: '2016-05-01',
+                            name: '王小虎',
+                            address: '上海市普陀区金沙江路 1519 弄'
+                        }
+                    ])
+                }, 1000)
+            },
+            // dateFormat(fmt, date) {
+            //         // let ret;
+            //         // const opt = {
+            //         //     "Y+": date.getFullYear().toString(),        // 年
+            //         //     "m+": (date.getMonth() + 1).toString(),     // 月
+            //         //     "d+": date.getDate().toString(),            // 日
+            //         //     "H+": date.getHours().toString(),           // 时
+            //         //     "M+": date.getMinutes().toString(),         // 分
+            //         //     "S+": date.getSeconds().toString()          // 秒
+            //         //     // 有其他格式化字符需求可以继续添加，必须转化成字符串
+            //         // };
+            //         // for (let k in opt) {
+            //         //     ret = new RegExp("(" + k + ")").exec(fmt);
+            //         //     if (ret) {
+            //         //         fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+            //         //     };
+            //         // };
+            //     return date.split(" ")[0];
+            // }
+        }
+    })
+</script>
+</html>

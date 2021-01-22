@@ -51,7 +51,7 @@ public class SetmealServiceImpl implements SetmealService {
         }
 
         delImgKey(setmeal.getImg());
-
+        invalidRedisSetmealKey();
     }
 
     @Override
@@ -93,9 +93,13 @@ public class SetmealServiceImpl implements SetmealService {
         // 删除旧多对多关系
         setmealCheckGroupM2M.clearBindBySetmeal(setmeal.getId());
         // 添加新多对多关系
-        setmealCheckGroupM2M.addCheckGroups4Setmeal(new HashSet<Integer>(setmeal.getCheckGroupsId()),setmeal.getId());
+        HashSet<Integer> ids = new HashSet<>(setmeal.getCheckGroupsId());
+        if (ids.size()>0){
+            setmealCheckGroupM2M.addCheckGroups4Setmeal(ids,setmeal.getId());
+        }
         // 删除图片key
         delImgKey(setmeal.getImg());
+        invalidRedisSetmealKey();
     }
 
     @Override
@@ -106,6 +110,7 @@ public class SetmealServiceImpl implements SetmealService {
         QiNiuUtils.removeFiles(setmealDao.getImg(id));
         // 删除套餐
         setmealDao.deleteSetmealById(id);
+        invalidRedisSetmealKey();
     }
 
     @Override
@@ -196,4 +201,14 @@ public class SetmealServiceImpl implements SetmealService {
         }
     }
 
+    public void invalidRedisSetmealKey(){
+        ShardedJedis jedisConn = shardedJedisPool.getResource();
+        try {
+            jedisConn.del(MessageConstant.SETMEAL_ALL_KEY);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            jedisConn.close();
+        }
+    }
 }

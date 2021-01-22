@@ -50,4 +50,9 @@
         update t_ordersetting set reservations=reservations+1
             where orderDate=#{orderDate,jdbcType=DATE} and reservations&lt;number
     </update>
+
+    <!--根据日期删除历史数据-->
+    <delete id="deleteHistoricalDataByDate" parameterType="string">
+        delete from t_ordersetting where orderDate &lt;= #{lastMothStr,jdbcType=DATE}
+    </delete>
 </mapper>

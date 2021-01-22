@@ -334,6 +334,7 @@
                 // 切换每页条数
                 handleSizeChange(val){
                     this.pagination.pageSize = val;
+                    this.findPage()
                 },
                 //切换页码
                 handleCurrentChange(currentPage) {

@@ -545,11 +545,19 @@
                     this.imageUrl = null;
                     this.findCheckGroups();
                 },
+                // 切换每页条数
+                handleSizeChange(val){
+                    this.pagination.pageSize = val;
+                    this.findPage()
+                },
                 //切换页码
                 handleCurrentChange(currentPage) {
+                    this.pagination.currentPage = currentPage;
+                    this.findPage()
                 },
                 // 弹出编辑窗口
                 handleUpdate(row) {
+                    this.formData={}
                     // 先获取该项信息
                     // 获取该对象
                     axios.get("/setmeal/find/"+ row.id +".do")
@@ -574,6 +582,8 @@
                 //编辑发送
                 handleEdit() {
                     this.formData["checkGroupsId"] = this.checkgroupIds;
+                    // console.log(this.formData)
+                    delete this.formData["checkGroups"]
                     axios.put("/setmeal/set.do",this.formData)
                         .then(res => {
                             // console.log(res.data);

@@ -33,6 +33,15 @@ public class User implements Serializable{
     private String station; // 状态
     private String telephone; // 联系电话
     private Set<Role> roles = new HashSet<Role>(0);//对应角色集合
+    private Set<Integer> roleIds;
+
+    public Set<Integer> getRoleIds() {
+        return roleIds;
+    }
+
+    public void setRoleIds(Set<Integer> roleIds) {
+        this.roleIds = roleIds;
+    }
 
     public Integer getId() {
         return id;

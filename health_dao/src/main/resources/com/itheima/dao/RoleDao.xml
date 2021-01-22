@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.RoleDao">
+
+
+<!--    <resultMap id="roleDetail" type="com.itheima.pojo.Role" autoMapping="true">-->
+<!--        <id column="id" property="id"/>-->
+<!--        <collection property="permissions" ofType="com.itheima.pojo.Permission" column="id" select="com.itheima.dao.Role_permissionM2M.findPermissionsByRoleId" />-->
+<!--        <collection property="menus" ofType="com.itheima.pojo.Menu" select="com.itheima.dao.Role_menuM2M.findMenusByRoleId" column="id"/>-->
+<!--    </resultMap>-->
+    
+<!--    <select id="findPage" resultMap="roleDetail">-->
+<!--        select * from t_role-->
+<!--    </select>    -->
+
+<!--    <resultMap id="roleDetail" type="com.itheima.pojo.Role">-->
+<!--        <id column="rid" property="id"/>-->
+<!--        <result column="rname" property="name"/>-->
+<!--        <result column="rkeyword" property="keyword"/>-->
+<!--        <result column="rdescription" property="description"/>-->
+<!--        <collection property="permissions" ofType="com.itheima.pojo.Permission">-->
+<!--            <id property="id" column="pid"/>-->
+<!--            <result property="name" column="pname"/>-->
+<!--            <result property="keyword" column="pkeyword"/>-->
+<!--            <result property="description" column="pdescription"/>-->
+<!--        </collection>-->
+<!--        <collection property="menus" ofType="com.itheima.pojo.Menu">-->
+<!--            <id property="id" column="mid"/>-->
+<!--            <result property="name" column="mname"/>-->
+<!--            <result property="linkUrl" column="mlinkUrl"/>-->
+<!--            <result property="description" column="mdescription"/>-->
+<!--            <result property="level" column="mlevel"/>-->
+<!--            <result property="parentMenuId" column="mparentMenuId"/>-->
+<!--            <collection property="children" ofType="com.itheima.pojo.Menu"/>-->
+<!--        </collection>-->
+<!--    </resultMap>-->
+
+    <resultMap id="permissionType4M2M" type="com.itheima.pojo.Permission">
+        <id property="id" column="pid"/>
+        <result property="name" column="pname"/>
+        <result property="keyword" column="pkeyword"/>
+        <result property="description" column="pdescription"/>
+    </resultMap>
+
+    <select id="findPermissionsM2M" resultMap="permissionType4M2M">
+        select
+            p.id pid, p.name pname, p.keyword pkeyword, p.description pdescription
+        from t_role_permission rp left join t_permission p on rp.role_id=#{id} where p.id=rp.permission_id
+    </select>
+
+    <resultMap id="menuType4M2M" type="com.itheima.pojo.Menu">
+        <id property="id" column="mid"/>
+        <result property="name" column="mname"/>
+        <result property="linkUrl" column="mlinkUrl"/>
+        <result property="description" column="mdescription"/>
+        <result property="level" column="mlevel"/>
+        <result property="parentMenuId" column="mparentMenuId"/>
+        <result property="roleId" column="roleId"/>
+        <collection property="children" ofType="com.itheima.pojo.Menu" select="findMenusSon" column="{mid=mid,roleId=roleId}"/>
+    </resultMap>
+
+    <select id="findMenusM2M" resultMap="menuType4M2M">
+        select
+                m.id mid, m.name mname, m.linkUrl mlinkUrl, m.description mdescription, m.level mlevel, m.parentMenuId mparentMenuId, #{id} roleId
+        from t_role_menu rm ,t_menu m  where level=1 and rm.menu_id=m.id and rm.role_id=#{id}
+    </select>
+
+    <select id="findMenusSon" resultType="com.itheima.pojo.Menu">
+<!--        select * from t_role_menu left join t_menu on role_id=#{roleId} where parentMenuId=#{mid}-->
+        select * from t_menu m WHERE id in (select menu_id from t_role_menu where role_id=#{roleId}) and parentMenuId=#{mid}
+    </select>
+
+    <select id="findMenusSonPlus" resultType="com.itheima.pojo.Menu">
+        select * from t_role_menu rm left join t_menu m on role_id=#{id} where m.level!=1
+    </select>
+
+    <resultMap id="roleDetail" type="com.itheima.pojo.Role">
+        <id column="role_id" property="id"/>
+        <result column="role_name" property="name"/>
+        <result column="role_keyword" property="keyword"/>
+        <result column="role_description" property="description"/>
+        <collection property="permissions" ofType="com.itheima.pojo.Permission" select="findPermissionsM2M" column="role_id">
+        </collection>
+        <collection property="menus" ofType="com.itheima.pojo.Menu" select="findMenusM2M" column="role_id">
+<!--            <collection property="children" ofType="com.itheima.pojo.Menu" select="findMenusSonPlus" column="role_id">-->
+<!--            </collection>-->
+        </collection>
+    </resultMap>
+
+    <select id="findPage" resultMap="roleDetail">
+<!--        select r.id rid,r.name rname, r.keyword rkeyword, r.description rdescription-->
+<!--             , p.id pid, p.name pname, p.keyword pkeyword, p.description pdescription-->
+<!--             , m.id mid, m.name mname, m.linkUrl mlinkUrl, m.description mdescription, m.level mlevel, m.parentMenuId mparentMenuId-->
+<!--        from-->
+<!--                t_role r left join t_role_permission rp on r.id=rp.role_id left join t_permission p on rp.permission_id=p.id-->
+<!--                         left join t_role_menu rm on r.id=rm.role_id left join t_menu m on rm.menu_id=m.id-->
+<!--        WHERE m.level=1-->
+
+<!--        select r.id rid,r.name rname, r.keyword rkeyword, r.description rdescription-->
+<!--            , p.id pid, p.name pname, p.keyword pkeyword, p.description pdescription-->
+<!--            , m.id mid, m.name mname, m.linkUrl mlinkUrl, m.description mdescription, m.level mlevel, m.parentMenuId mparentMenuId-->
+<!--        from-->
+<!--            t_role r,t_role_permission rp,t_permission p,t_role_menu rm,t_menu m-->
+<!--        WHERE r.id=rp.role_id and rp.permission_id=p.id and r.id=rm.role_id and rm.menu_id=m.id and m.level=1-->
+           select id role_id,name role_name,keyword role_keyword,description role_description from t_role
+    </select>
+
+    <insert id="addRole" keyProperty="id" useGeneratedKeys="true">
+        insert into t_role(name,keyword,description)
+            values(#{name},#{keyword},#{description})
+    </insert>
+
+    <select id="findById" resultType="com.itheima.pojo.Role">
+        select * from t_role where id=#{id}
+    </select>
+
+    <select id="findByUserId" resultType="com.itheima.pojo.Role">
+        select * from t_role,t_user_role where user_id=#{id} and role_id=id
+    </select>
+
+    <update id="setRole">
+        update t_role set name=#{name},keyword=#{keyword},description=#{description}
+            where id=#{id}
+    </update>
+
+    <delete id="deleteRoleById">
+        delete from t_role where id=#{id}
+    </delete>
+
+    <select id="findAll" resultType="com.itheima.pojo.Role">
+        select * from t_role
+    </select>
+
+    <select id="getIdInTableCount" resultType="long">
+        select count(0) from t_role where id in(
+        <foreach collection="collection" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </select>
+
+
+</mapper>

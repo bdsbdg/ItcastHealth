@@ -102,4 +102,12 @@
             (select count(id) from t_member where regTime &lt;=#{month}"-31") #{month}
         </foreach>
     </select>
+
+    <select id="findSexCountByGroup" resultType="java.util.Map">
+        select sex name,count(0) value from t_member group by sex
+    </select>
+
+    <select id="findAgeCountByGroup" resultType="java.lang.String">
+        select birthday from t_member
+    </select>
 </mapper>

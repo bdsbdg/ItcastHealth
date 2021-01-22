@@ -7,6 +7,25 @@ import java.util.*;
  * 菜单
  */
 public class Menu implements Serializable{
+
+
+
+    @Override
+    public String toString() {
+        return "Menu{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", linkUrl='" + linkUrl + '\'' +
+                ", path='" + path + '\'' +
+                ", priority=" + priority +
+                ", description='" + description + '\'' +
+                ", icon='" + icon + '\'' +
+                ", roles=" + roles +
+                ", children=" + children +
+                ", parentMenuId=" + parentMenuId +
+                '}';
+    }
+
     private Integer id;
     private String name; // 菜单名称
     private String linkUrl; // 访问路径
@@ -17,6 +36,16 @@ public class Menu implements Serializable{
     private Set<Role> roles = new HashSet<Role>(0);//角色集合
     private List<Menu> children = new ArrayList<>();//子菜单集合
     private Integer parentMenuId;//父菜单id
+    private Integer roleId;//对应角色id
+    private Integer level;
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
 
     public Integer getId() {
         return id;
