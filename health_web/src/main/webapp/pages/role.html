@@ -384,7 +384,7 @@
                                                         label="选择"
                                                 >
                                                     <template slot-scope="scope">
-                                                        <input :id="scope.row.id" v-model="menuIds" type="checkbox" :value="scope.row.id" v-if="!(scope.row.level==1)">
+                                                        <input :id="scope.row.id" v-model="menuIds" type="checkbox" :value="scope.row.id" >
                                                     </template>
                                                 </el-table-column>
                                                 <el-table-column
@@ -443,6 +443,11 @@
                 this.findPage();
             },
             methods: {
+                // 全选
+                // checkedHandle(menu,id,self){
+                //     console.log(menu)
+                //     console.log(self)
+                // },
                 //编辑
                 handleEdit() {
                     this.formData["permissionIds"] = this.permissionIds;

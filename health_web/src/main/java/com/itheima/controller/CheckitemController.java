@@ -29,6 +29,7 @@ public class CheckitemController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('CHECKITEM_QUERY')")
     @GetMapping("/find/all")
     public Result findAll(){
             List<CheckItem> checkItemList = checkitemService.findAll();
@@ -67,6 +68,7 @@ public class CheckitemController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('CHECKITEM_DELETE')")
     @DeleteMapping("/delete/{id}")
     public Result deleteCheckitem(@PathVariable("id") @Min(value = 1,message = "id不能小于1")Integer id){
 //        System.out.println("delete:"+id);
@@ -83,6 +85,7 @@ public class CheckitemController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('CHECKITEM_QUERY')")
     @GetMapping("/find/{id}")
     public Result findCheckitem(@PathVariable("id") @Min(value = 1,message = "id不能小于1")Integer id){
         return new Result(true, MessageConstant.QUERY_CHECKITEM_SUCCESS, checkitemService.findById(id));
@@ -94,6 +97,7 @@ public class CheckitemController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('CHECKITEM_EDIT')")
     @PutMapping("/set")
     public Result setCheckitem(@Validated @RequestBody CheckItem checkItem){
 //        System.out.println(checkItem);

@@ -49,8 +49,28 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public void deleteMenu(Integer id)throws ServiceException {
-        if (menuDao.haveSon(id) > 0){
-            throw new ServiceException("存在关联子菜单 不能删除!");
+        // 查询菜单是否存在，并确认是几级菜单
+        Menu menu = menuDao.findMenuById(id);
+        if (menu==null){
+            throw new ServiceException("该菜单不存在!");
+        }
+        List<String> roleNames = role_menuM2M.findRoleByMenuId(id);
+        if (roleNames.size()>0) {
+            StringBuilder msg = new StringBuilder();
+            roleNames.forEach(name -> {
+                if (name!=null){
+                    msg.append(name);
+                    msg.append(",");
+                }
+            });
+            throw new ServiceException("该菜单已被角色:"+ msg.toString() +"使用 不能删除!");
+        }
+
+        if (menu.getLevel()==1){
+            // 父菜单 确认子菜单是否删干净了
+            if (menuDao.haveSon(id)>0) {
+                throw new ServiceException("该菜单存在关联子菜单 不能删除!");
+            }
         }
         menuDao.deleteMenu(id);
     }

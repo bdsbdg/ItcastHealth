@@ -55,6 +55,7 @@
             initTime() {
                 this.$refs.startTime.max = this.month.endTime;
                 this.$refs.endTime.min = this.month.startTime;
+                this.$refs.endTime.max = this.maxDate;
             },
             getMember() {
                 this.initTime();
@@ -96,6 +97,7 @@
             }
             this.month.startTime = year - 1 + "-" + month;
             this.month.endTime = year + "-" + month;
+            this.maxDate=this.month.endTime
             this.$nextTick(_ => {
                 this.getMember();
             })

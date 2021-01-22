@@ -27,6 +27,7 @@ public class PermissionController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('PERMISSION_QUERY')")
     @GetMapping("/find/all")
     public Result findAll(){
         List<Permission> checkItemList = permissionService.findAll();
@@ -38,6 +39,7 @@ public class PermissionController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('PERMISSION_ADD')")
     @PostMapping("/add")
     public Result addPermission(@Validated @RequestBody Permission permission){
         permissionService.addPermission(permission);
@@ -50,9 +52,10 @@ public class PermissionController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('PERMISSION_QUERY')")
     @PostMapping("/find/page")
     public Result findPage(@Validated @RequestBody QueryPageBean queryPageBean){
-        return new Result(true, MessageConstant.QUERY_CHECKITEM_SUCCESS, permissionService.findPage(queryPageBean));
+        return new Result(true, MessageConstant.QUERY_PERMISSION_SUCCESS, permissionService.findPage(queryPageBean));
     }
 
     /**
@@ -61,14 +64,15 @@ public class PermissionController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('PERMISSION_DELETE')")
     @DeleteMapping("/delete/{id}")
     public Result deletePermission(@PathVariable("id") @Min(value = 1,message = "id不能小于1")Integer id){
         System.out.println("delete:"+id);
         int count = permissionService.deleteById(id);
         if (count!=0){
-            return new Result(true, MessageConstant.DELETE_CHECKITEM_SUCCESS);
+            return new Result(true, MessageConstant.DELETE_PERMISSION_SUCCESS);
         }
-        return new Result(false, MessageConstant.DELETE_PERMISSION_FAIL);
+        return new Result(false, MessageConstant.DELETE_PERMISSION_FAIL+"该权限已存在关联角色!");
     }
 
     /**
@@ -77,6 +81,7 @@ public class PermissionController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('PERMISSION_QUERY')")
     @GetMapping("/find/{id}")
     public Result findPermission(@PathVariable("id") @Min(value = 1,message = "id不能小于1")Integer id){
         return new Result(true, MessageConstant.QUERY_PERMISSION_SUCCESS, permissionService.findById(id));
@@ -87,6 +92,7 @@ public class PermissionController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('PERMISSION_EDIT')")
     @PostMapping("/update")
     public Result setPermission(@Validated @RequestBody Permission permission){
 //        System.out.println(checkItem);

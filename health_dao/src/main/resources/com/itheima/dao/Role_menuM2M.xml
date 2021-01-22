@@ -26,4 +26,12 @@
     <select id="findMenusIdByRoleIdM2M" resultType="java.lang.Integer">
         select menu_id from t_role_menu where role_id=#{id}
     </select>
+
+    <select id="findCountByMenuId" resultType="long">
+        select count(0) from t_role_menu rm,t_menu m WHERE rm.menu_id=m.id and m.id=#{id}
+    </select>
+
+    <select id="findRoleByMenuId" resultType="java.lang.String">
+        select r.name from t_role r,t_role_menu rm,t_menu m WHERE r.id=rm.role_id and rm.menu_id=m.id and m.id=#{id}
+    </select>
 </mapper>

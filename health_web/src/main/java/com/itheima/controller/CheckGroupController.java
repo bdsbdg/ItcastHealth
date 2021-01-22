@@ -9,6 +9,7 @@ import com.itheima.pojo.CheckGroup;
 import com.itheima.pojo.CheckItem;
 import com.itheima.service.CheckGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +29,7 @@ public class CheckGroupController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('CHECKGROUP_QUERY')")
     @GetMapping("/find/all")
     public Result findAll(){
         List<CheckGroup> checkGroupList = checkGroupService.findAll();
@@ -36,6 +38,7 @@ public class CheckGroupController {
 
 
     @ResponseBody
+    @PreAuthorize("hasAuthority('CHECKGROUP_QUERY')")
     @PostMapping("/find/page")
     public Result findPage(@Validated @RequestBody QueryPageBean queryPageBean){
         return new Result(true, MessageConstant.QUERY_CHECKITEM_SUCCESS, checkGroupService.findPage(queryPageBean));
@@ -47,6 +50,7 @@ public class CheckGroupController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('CHECKGROUP_ADD')")
     @PostMapping("/add")
     public Result addCheckGroup(@Validated @RequestBody CheckGroup checkGroup){
         System.out.println(checkGroup);
@@ -60,12 +64,14 @@ public class CheckGroupController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('CHECKGROUP_QUERY')")
     @GetMapping("/find/{id}")
     public Result findCheckGroup(@PathVariable("id") @Min(value = 1,message = "id不能小于1") Integer id){
         return new Result(true, MessageConstant.QUERY_CHECKITEM_SUCCESS, checkGroupService.findById(id));
     }
 
     @ResponseBody
+    @PreAuthorize("hasAuthority('CHECKGROUP_EDIT')")
     @PutMapping("/set")
     public Result setCheckGroup(@Validated @RequestBody CheckGroup checkGroup){
         System.out.println(checkGroup);
@@ -74,6 +80,7 @@ public class CheckGroupController {
     }
 
     @ResponseBody
+    @PreAuthorize("hasAuthority('CHECKGROUP_DELETE')")
     @DeleteMapping("/delete/{id}")
     public Result deleteCheckGroup(@PathVariable("id") @Min(value = 1,message = "id不能小于1")Integer id){
         checkGroupService.deleteCheckGroupById(id);

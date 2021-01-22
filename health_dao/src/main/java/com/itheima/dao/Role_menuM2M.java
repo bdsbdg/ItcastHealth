@@ -1,5 +1,6 @@
 package com.itheima.dao;
 
+import com.itheima.pojo.Role;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.HashSet;
@@ -13,4 +14,8 @@ public interface Role_menuM2M {
     List<Integer> findMenuIdsByRoleId(Integer id);
 
     List<Integer> findMenusIdByRoleIdM2M(Integer id);
+
+    long findCountByMenuId(Integer id);
+
+    List<String> findRoleByMenuId(Integer id);
 }

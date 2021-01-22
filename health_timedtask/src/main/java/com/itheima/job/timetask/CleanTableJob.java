@@ -31,8 +31,8 @@ public class CleanTableJob {
      * 根据日期删除预约设置历史数据
      * 每个月的最后一天执行
      */
-    //@Scheduled(initialDelay = 3000, fixedDelay = 1800000)
-    @Scheduled(cron = "0 0 2 L * ?")
+//    @Scheduled(cron = "0 0 2 L * ?")
+    @Scheduled(initialDelay = 1000, fixedDelay = 200000)
     public void cleanTable(){
         log.info("开始执行删除预约设置历史数据");
         // 当前日期

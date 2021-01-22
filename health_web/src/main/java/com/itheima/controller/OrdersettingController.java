@@ -7,6 +7,7 @@ import com.itheima.entity.Result;
 import com.itheima.pojo.OrderSetting;
 import com.itheima.service.OrderService;
 import com.itheima.utils.POIUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +30,7 @@ public class OrdersettingController {
      * 上传指定格式的excel 解析为预约设置
      * @param excelFile excel文件
      */
+    @PreAuthorize("hasAuthority('ORDERSETTING_EDIT')")
     @PostMapping("/upload")
     public Result uploadSetting(MultipartFile excelFile){
         // 解析excel
@@ -63,6 +65,7 @@ public class OrdersettingController {
      * yyyy/MM数据查询对应月份的Order数据
      * @return
      */
+    @PreAuthorize("hasAuthority('ORDERSETTING_QUERY')")
     @GetMapping("/date")
     public Result findOrderByDate(String date){
 //        System.out.println(date);
@@ -71,6 +74,7 @@ public class OrdersettingController {
 
 
     @ResponseBody
+    @PreAuthorize("hasAuthority('ORDERSETTING_EDIT')")
     @PostMapping("/set")
     public Result setOrder(@RequestBody OrderSetting orderSetting){
 //        System.out.println(orderSetting);

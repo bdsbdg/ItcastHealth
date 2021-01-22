@@ -12,6 +12,7 @@ import com.itheima.pojo.User;
 import com.itheima.pojo.UserWrap;
 import com.itheima.service.RoleService;
 import com.itheima.service.UserAdminService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -44,6 +45,7 @@ public class UserAmdinController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('USER_QUERY')")
     @GetMapping("/find/all")
     public Result findAll(){
         List<User> checkGroupList = userAdminService.findAll();
@@ -52,6 +54,7 @@ public class UserAmdinController {
 
 
     @ResponseBody
+    @PreAuthorize("hasAuthority('USER_QUERY')")
     @PostMapping("/find/page")
     public Result findPage(@Validated @RequestBody QueryPageBean queryPageBean){
         return new Result(true, MessageConstant.QUERY_USER_SUCCESS, userAdminService.findPage(queryPageBean));
@@ -62,6 +65,7 @@ public class UserAmdinController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('USER_ADD')")
     @PostMapping("/add")
     public Result addCheckGroup(@Validated @RequestBody User user){
 //        System.out.println(role);
@@ -81,6 +85,7 @@ public class UserAmdinController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('USER_QUERY')")
     @GetMapping("/find/{id}")
     public Result findCheckGroup(@PathVariable("id") @Min(value = 1,message = "id不能小于1") Integer id){
         User user = userAdminService.findById(id);
@@ -88,6 +93,7 @@ public class UserAmdinController {
     }
 
     @ResponseBody
+    @PreAuthorize("hasAuthority('USER_EDIT')")
     @PutMapping("/set")
     public Result setCheckGroup(@Validated @RequestBody User user,HttpServletRequest request){
 //        System.out.println(role);
@@ -132,12 +138,14 @@ public class UserAmdinController {
 
             sessionManger.delSession(rawName);
             sessionManger.addSession(newUser.getUsername(),session);
-            SecurityContextHolder.getContext().setAuthentication(newAuth);
+            security_context.setAuthentication(newAuth);
+//            SecurityContextHolder.getContext().setAuthentication(newAuth);
         }
         return new Result(true, MessageConstant.UPDATE_USER_SUCCESS);
     }
 
     @ResponseBody
+    @PreAuthorize("hasAuthority('USER_DELETE')")
     @DeleteMapping("/delete/{id}")
     public Result deleteCheckGroup(@PathVariable("id") @Min(value = 1,message = "id不能小于1")Integer id){
         String username = userAdminService.deleteUserById(id);

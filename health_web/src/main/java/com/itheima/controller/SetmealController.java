@@ -10,6 +10,7 @@ import com.itheima.pojo.Setmeal;
 import com.itheima.service.SetmealService;
 import com.itheima.utils.QiNiuUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,6 +38,7 @@ public class SetmealController {
      * 上传图片
      * @param imgFile
      */
+    @PreAuthorize("hasAuthority('SETMEAL_ADD')")
     @PostMapping("/upload")
     public Result uploadSetmealImg(MultipartFile imgFile){
         // 获取文件后缀
@@ -80,6 +82,7 @@ public class SetmealController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('SETMEAL_ADD')")
     @PostMapping("/add")
     public Result addSetmeal(@Validated @RequestBody Setmeal setmeal){
 //        System.out.println(setmeal);
@@ -88,6 +91,7 @@ public class SetmealController {
     }
 
     @ResponseBody
+    @PreAuthorize("hasAuthority('SETMEAL_QUERY')")
     @PostMapping("/find/page")
     public Result findPage(@Validated @RequestBody QueryPageBean queryPageBean){
         System.out.println(queryPageBean);
@@ -100,12 +104,14 @@ public class SetmealController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('SETMEAL_QUERY')")
     @GetMapping("/find/{id}")
     public Result findCheckGroup(@PathVariable("id") @Min(value = 1,message = "id不能小于1") Integer id){
         return new Result(true, MessageConstant.QUERY_CHECKITEM_SUCCESS, setmealService.findById(id));
     }
 
     @ResponseBody
+    @PreAuthorize("hasAuthority('SETMEAL_EDIT')")
     @PutMapping("/set")
     public Result setCheckGroup(@Validated @RequestBody Setmeal setmeal){
 //        System.out.println(setmeal);
@@ -115,6 +121,7 @@ public class SetmealController {
     }
 
     @ResponseBody
+    @PreAuthorize("hasAuthority('SETMEAL_DELETE')")
     @DeleteMapping("/delete/{id}")
     public Result deleteCheckGroup(@PathVariable("id") @Min(value = 1,message = "id不能小于1")Integer id){
         setmealService.deleteSetmealById(id);

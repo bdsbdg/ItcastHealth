@@ -10,6 +10,7 @@ import com.itheima.pojo.Role;
 import com.itheima.pojo.User;
 import com.itheima.service.CheckGroupService;
 import com.itheima.service.RoleService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,7 @@ public class RoleController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('ROLE_QUERY')")
     @GetMapping("/find/all")
     public Result findAll(){
         List<Role> checkGroupList = roleService.findAll();
@@ -37,6 +39,7 @@ public class RoleController {
 
 
     @ResponseBody
+    @PreAuthorize("hasAuthority('ROLE_QUERY')")
     @PostMapping("/find/page")
     public Result findPage(@Validated @RequestBody QueryPageBean queryPageBean){
         return new Result(true, MessageConstant.QUERY_ROLE_SUCCESS, roleService.findPage(queryPageBean));
@@ -47,6 +50,7 @@ public class RoleController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('ROLE_ADD')")
     @PostMapping("/add")
     public Result addCheckGroup(@Validated @RequestBody Role role){
 //        System.out.println(role);
@@ -60,6 +64,7 @@ public class RoleController {
      * @return
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('ROLE_QUERY')")
     @GetMapping("/find/{id}")
     public Result findCheckGroup(@PathVariable("id") @Min(value = 1,message = "id不能小于1") Integer id){
         Role role = roleService.findById(id);
@@ -68,6 +73,7 @@ public class RoleController {
     }
 
     @ResponseBody
+    @PreAuthorize("hasAuthority('ROLE_EDIT')")
     @PutMapping("/set")
     public Result setCheckGroup(@Validated @RequestBody Role role){
 //        System.out.println(role);
@@ -80,6 +86,7 @@ public class RoleController {
     }
 
     @ResponseBody
+    @PreAuthorize("hasAuthority('ROLE_DELETE')")
     @DeleteMapping("/delete/{id}")
     public Result deleteCheckGroup(@PathVariable("id") @Min(value = 1,message = "id不能小于1")Integer id){
         roleService.deleteRoleById(id);

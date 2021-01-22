@@ -61,7 +61,7 @@ public class PermissionServiceImpl implements PermissionService {
         // 查看是否有关联的checkgroup
         if (permissionDao.findPermissionFromM2M(id)>0) {
             // 抛出异常
-            throw new ServiceException("该检查项已关联检查组 不能删除!");
+            throw new ServiceException("该权限存在关联角色 不能删除!");
         }
         return permissionDao.deleteById(id);
     }

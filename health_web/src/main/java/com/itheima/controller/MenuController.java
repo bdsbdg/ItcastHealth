@@ -58,6 +58,7 @@ public class MenuController {
      * @param menu
      * @return
      */
+    @PreAuthorize("hasAuthority('MENU_ADD')")
     @PostMapping("/level1/add")
     public Result addMenuOfLevel1(@RequestBody Menu menu){
         menuService.addLevel1(menu);
@@ -69,6 +70,7 @@ public class MenuController {
      * @param menu
      * @return
      */
+    @PreAuthorize("hasAuthority('MENU_ADD')")
     @PostMapping("/level2/add")
     public Result addMenuOfLevel2(@RequestBody Menu menu){
         menuService.addLevel2(menu);
@@ -80,6 +82,7 @@ public class MenuController {
      * @param menu
      * @return
      */
+    @PreAuthorize("hasAuthority('MENU_EDIT')")
     @PostMapping("/update")
     public Result updateMenu(@RequestBody Menu menu){
         menuService.updateMenu(menu);
@@ -91,6 +94,7 @@ public class MenuController {
      * @param id
      * @return
      */
+    @PreAuthorize("hasAuthority('MENU_DELETE')")
     @DeleteMapping("/delete/{id}")
     public Result deleteMenu(@PathVariable Integer id){
         menuService.deleteMenu(id);
@@ -102,6 +106,7 @@ public class MenuController {
      * @param id
      * @return
      */
+    @PreAuthorize("hasAuthority('MENU_QUERY')")
     @GetMapping("/find/{id}")
     public Result findMenu(@PathVariable Integer id){
         return new Result(true, MessageConstant.QUERY_MENU_BYID_SUCCESS, menuService.findMenuById(id));
@@ -111,6 +116,7 @@ public class MenuController {
      * 分页查询菜单
      */
     @ResponseBody
+    @PreAuthorize("hasAuthority('MENU_QUERY')")
     @PostMapping("/find/page")
     public Result findPage(@Validated @RequestBody QueryPageBean queryPageBean){
 //        System.out.println(queryPageBean);
